@@ -42,7 +42,16 @@ class BotRunner:
 
     def __init__(self) -> None:
         self._simulations: dict[uuid.UUID, SimulationStatus] = {}
-        self._lock = asyncio.Lock()
+        self._lock: asyncio.Lock | None = None
+
+    def _get_lock(self) -> asyncio.Lock:
+        # Created lazily inside the running loop: on Python 3.9 asyncio.Lock()
+        # binds to (and requires) the current event loop at construction time,
+        # and this module is imported (bot_runner singleton below) before
+        # uvicorn's loop exists.
+        if self._lock is None:
+            self._lock = asyncio.Lock()
+        return self._lock
 
     def get_status(self, market_id: uuid.UUID) -> SimulationStatus | None:
         state = self._simulations.get(market_id)
@@ -65,7 +74,7 @@ class BotRunner:
         rng_seed: int | None = None,
     ) -> SimulationStatus:
         """Start a background belief-trader loop for one market."""
-        async with self._lock:
+        async with self._get_lock():
             await self._stop_locked(market_id)
 
             state = SimulationStatus(market_id=market_id, running=True)
@@ -82,7 +91,7 @@ class BotRunner:
             return self.get_status(market_id)  # type: ignore[return-value]
 
     async def stop_simulation(self, market_id: uuid.UUID) -> SimulationStatus | None:
-        async with self._lock:
+        async with self._get_lock():
             return await self._stop_locked(market_id)
 
     async def _stop_locked(self, market_id: uuid.UUID) -> SimulationStatus | None:
@@ -100,7 +109,7 @@ class BotRunner:
         return self.get_status(market_id)
 
     async def stop_all(self) -> None:
-        async with self._lock:
+        async with self._get_lock():
             for market_id in list(self._simulations):
                 await self._stop_locked(market_id)
 
