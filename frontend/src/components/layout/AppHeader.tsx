@@ -27,6 +27,9 @@ export default function AppHeader() {
           <NavLink to="/markets" className={linkClass}>
             Markets
           </NavLink>
+          <NavLink to="/how-it-works" className={linkClass}>
+            How it works
+          </NavLink>
           <NavLink to="/features" className={linkClass}>
             AI Brief
           </NavLink>

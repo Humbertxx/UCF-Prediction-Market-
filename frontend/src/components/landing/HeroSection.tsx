@@ -131,7 +131,7 @@ export default function HeroSection() {
             View Live Markets
           </MotionLink>
           <MotionLink
-            to="/#how-it-works"
+            to="/how-it-works"
             className="rounded-[10px] border border-card/20 bg-card/10 px-6 py-3 font-display text-base font-semibold text-card transition hover:bg-card/20"
             spring={false}
           >

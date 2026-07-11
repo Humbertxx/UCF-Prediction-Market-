@@ -5,6 +5,7 @@
 import { Link } from "react-router-dom";
 
 import HoverCard from "../ui/HoverCard";
+import DecorativeMarketGraph from "./DecorativeMarketGraph";
 import { CAMPUS_DEMO_TOPICS } from "../../lib/landing";
 import { MotionLink } from "../../motion/components/MotionButton";
 import MotionReveal, { MotionRevealItem } from "../../motion/components/MotionReveal";
@@ -13,10 +14,12 @@ export default function CampusDemoSection() {
   return (
     <MotionReveal
       stagger
-      className="border-b border-line bg-deck py-16 text-card sm:py-20"
+      className="relative overflow-hidden border-b border-line bg-ink py-16 text-card sm:py-20"
       aria-labelledby="campus-demo-heading"
     >
-      <div className="mx-auto max-w-6xl px-4">
+      <DecorativeMarketGraph />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4">
         <MotionRevealItem>
           <p className="font-display text-sm font-medium uppercase tracking-[0.12em] text-gold">
             Campus demo

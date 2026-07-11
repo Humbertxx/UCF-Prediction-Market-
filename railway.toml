@@ -1,0 +1,15 @@
+# Railway config-as-code for the API service.
+# In the Railway dashboard: Root Directory = / (repo root), not /backend.
+# Suggested watch paths: /backend/**, requirements.txt, alembic.ini, railway.toml
+#
+# Config path for this service: /railway.toml
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"
+preDeployCommand = "alembic upgrade head"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"

@@ -1,0 +1,14 @@
+# Railway config-as-code for the frontend SPA service.
+# In the Railway dashboard: Root Directory = /frontend
+# Config path for this service: /frontend/railway.toml
+# Suggested watch paths: /frontend/**
+
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm ci && npm run build"
+
+[deploy]
+startCommand = "caddy run --config ./Caddyfile --adapter caddyfile"
+healthcheckPath = "/"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"

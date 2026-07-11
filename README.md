@@ -127,6 +127,10 @@ pip install -r requirements.txt
 
 Keep dependencies in `.venv` — do not commit the virtualenv. Run the API with uvicorn; it exposes `/health`. The frontend points to it through `VITE_API_BASE_URL`. Gemini insight degrades to a calm fallback whenever `GEMINI_API_KEY` is unset, so the trading core never depends on the AI being up.
 
+## Deploy (Railway)
+
+Production uses two Railway services (API + frontend SPA). See [`docs/RAILWAY.md`](docs/RAILWAY.md) for root directories, env vars, and the `VITE_API_BASE_URL` deploy order.
+
 ## Demo Day Runbook
 
 Start both services (two terminals, from repo root):

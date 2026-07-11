@@ -33,5 +33,8 @@ google-auth>=2.35.0,<3.0.0
 # Supabase (Postgres client helpers / service role)
 supabase>=2.10.0,<3.0.0
 
+# Gemini market insight (server-side; model gemini-3.5-flash)
+google-genai>=1.0.0,<2.0.0
+
 # Tests (phase-gate AMM / trade checks)
 pytest>=8.3.0,<9.0.0

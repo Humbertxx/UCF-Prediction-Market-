@@ -8,6 +8,7 @@ import { Route, Routes } from "react-router-dom";
 import AppHeader from "./components/layout/AppHeader";
 import Admin from "./pages/Admin";
 import Features from "./pages/Features";
+import HowItWorks from "./pages/HowItWorks";
 import Login from "./pages/Login";
 import MarketPage from "./pages/MarketPage";
 import Markets from "./pages/Markets";
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/markets" element={<Markets />} />
           <Route path="/features" element={<Features />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/markets/:marketId" element={<MarketPage />} />
