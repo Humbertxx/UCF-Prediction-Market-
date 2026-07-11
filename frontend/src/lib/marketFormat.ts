@@ -65,3 +65,11 @@ export function averageCostPerShare(
 export function isMarketTradeable(status: MarketStatus): boolean {
   return status === "trading" || status === "seeded";
 }
+
+/** Locale-friendly settlement timestamp for resolved markets. */
+export function formatResolvedAt(iso: string): string {
+  return new Date(iso).toLocaleString([], {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}

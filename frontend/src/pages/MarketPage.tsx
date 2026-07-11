@@ -7,20 +7,27 @@ import { Link, useParams } from "react-router-dom";
 import MarketInsight from "../components/market/MarketInsight";
 import PriceChart from "../components/market/PriceChart";
 import ProbabilityBar from "../components/market/ProbabilityBar";
+import ResolvedOutcomeBanner from "../components/market/ResolvedOutcomeBanner";
 import TradeFeed from "../components/market/TradeFeed";
 import TradePanel from "../components/market/TradePanel";
+import { useAuth } from "../context/AuthContext";
 import { useMarketDetail } from "../hooks/useMarket";
+import { useMarketPosition } from "../hooks/usePositions";
 import { useTrades } from "../hooks/useTrades";
 import { formatMarketStatus } from "../lib/marketFormat";
+import { outcomeResolvedLabel } from "../lib/terminology";
 
 export default function MarketPage() {
   const { marketId } = useParams<{ marketId: string }>();
+  const { isAuthenticated } = useAuth();
   const {
     market,
     status: marketStatus,
     error: marketError,
     refresh: refreshMarket,
   } = useMarketDetail(marketId);
+
+  const { position } = useMarketPosition(marketId, isAuthenticated);
 
   const {
     trades,
@@ -74,6 +81,18 @@ export default function MarketPage() {
     );
   }
 
+  const settlementPnl =
+    position && position.cost_basis_credits > 0
+      ? position.realized_pnl !== 0
+        ? position.realized_pnl
+        : position.unrealized_pnl
+      : null;
+
+  const statusLabel =
+    market.status === "resolved" && market.resolution_outcome
+      ? `${formatMarketStatus(market.status)} · ${outcomeResolvedLabel(market.resolution_outcome === "yes")}`
+      : formatMarketStatus(market.status);
+
   return (
     <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
       <div>
@@ -93,14 +112,19 @@ export default function MarketPage() {
             </p>
           </div>
           <span className="rounded-full border border-line px-3 py-1 text-sm text-muted">
-            {formatMarketStatus(market.status)}
+            {statusLabel}
           </span>
         </div>
 
-        <ProbabilityBar
-          yesPriceBps={liveYesPriceBps}
-          className="mt-6"
-        />
+        {market.status === "resolved" && market.resolution_outcome && (
+          <ResolvedOutcomeBanner
+            outcome={market.resolution_outcome}
+            resolvedAt={market.resolved_at}
+            settlementPnl={settlementPnl}
+          />
+        )}
+
+        <ProbabilityBar yesPriceBps={liveYesPriceBps} className="mt-6" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">

@@ -10,12 +10,14 @@ import { usePlaceTrade } from "../../hooks/useTrades";
 import { useWallet } from "../../hooks/useWallet";
 import {
   formatPriceFromBps,
+  formatResolvedAt,
   isMarketTradeable,
 } from "../../lib/marketFormat";
 import {
   formatTradeSideAction,
   outcomeBuyLabel,
   outcomeBuyingLabel,
+  outcomeResolvedLabel,
 } from "../../lib/terminology";
 import type { MarketDetail, TradeSide } from "../../types/market";
 
@@ -72,7 +74,20 @@ export default function TradePanel({ market, onTradeSuccess }: TradePanelProps) 
         </p>
       )}
 
-      {!tradeable && (
+      {!tradeable && market.status === "resolved" && market.resolution_outcome && (
+        <p className="mt-3 text-sm text-muted">
+          This market resolved as{" "}
+          <span className="font-medium text-ink">
+            {outcomeResolvedLabel(market.resolution_outcome === "yes")}
+          </span>
+          {market.resolved_at
+            ? ` on ${formatResolvedAt(market.resolved_at)}`
+            : ""}
+          .
+        </p>
+      )}
+
+      {!tradeable && market.status !== "resolved" && (
         <p className="mt-3 text-sm text-muted">
           This market is not open for trading.
         </p>

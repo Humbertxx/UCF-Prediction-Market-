@@ -5,14 +5,15 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  averageCostPerShare,
   formatCredits,
   formatMarketStatus,
   formatPercentFromBps,
   formatPositionSide,
   formatPriceFromBps,
+  formatResolvedAt,
   isMarketTradeable,
   pnlColorClass,
-  averageCostPerShare,
 } from "./marketFormat";
 
 describe("formatPriceFromBps", () => {
@@ -51,6 +52,14 @@ describe("isMarketTradeable", () => {
     expect(isMarketTradeable("seeded")).toBe(true);
     expect(isMarketTradeable("resolved")).toBe(false);
     expect(isMarketTradeable("resolving")).toBe(false);
+  });
+});
+
+describe("formatResolvedAt", () => {
+  it("returns a non-empty locale string for a fixed ISO timestamp", () => {
+    const formatted = formatResolvedAt("2026-07-11T19:30:00.000Z");
+    expect(formatted.length).toBeGreaterThan(0);
+    expect(formatted).toMatch(/2026/);
   });
 });
 

@@ -4,6 +4,7 @@
 
 import { Link } from "react-router-dom";
 
+import LiveTradeTape from "./LiveTradeTape";
 import MarketCardGrid from "./MarketCardGrid";
 import ReviewTicker from "./ReviewTicker";
 import MotionReveal from "../../motion/components/MotionReveal";
@@ -48,6 +49,8 @@ export default function MarketsPreviewSection() {
           className="mt-10"
         />
       </div>
+
+      <LiveTradeTape />
 
       <ReviewTicker />
     </MotionReveal>

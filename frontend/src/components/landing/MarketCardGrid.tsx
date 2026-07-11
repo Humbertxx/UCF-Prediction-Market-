@@ -11,7 +11,7 @@ import { useMotionSafe } from "../../motion/hooks/useMotionSafe";
 
 const gridVariants: Variants = {
   hidden: {},
-  show: {
+  visible: {
     transition: { staggerChildren: 0.12 },
   },
 };
@@ -76,7 +76,7 @@ export default function MarketCardGrid({
     <motion.div
       variants={motionSafe.variants(gridVariants)}
       initial={motionSafe.initial}
-      animate="show"
+      animate={motionSafe.animate}
       className={[
         "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3",
         className,
