@@ -1,6 +1,29 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/*
+ * Design tokens from DESIGN.md section 13 (Tailwind v4 CSS-first theme).
+ * Components must use these token classes (text-ink, bg-card, rounded-btn, …)
+ * instead of hardcoded hex values.
+ */
+@theme {
+  --color-ink: #14161b;
+  --color-surface: #f7f8fa;
+  --color-card: #ffffff;
+  --color-gold: #ffc904;
+  --color-gold-ink: #8a6b00;
+  --color-yes: #12805c;
+  --color-no: #c6432e;
+  --color-muted: #6b7280;
+  --color-line: #e2e5ea;
+  --color-deck: #1b1e26;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-data: "JetBrains Mono", monospace;
+
+  --radius-card: 12px;
+  --radius-btn: 8px;
+}
 
 body {
   @apply bg-surface font-body text-ink;
