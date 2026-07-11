@@ -1,6 +1,6 @@
-# UCF Prediction Market
+# Knightshi
 
-UCF-themed binary prediction-market simulation built with virtual credits for the **BloomKnights** competition. Users buy YES/NO shares in demo markets, prices move through a constant-product market maker (CPMM), and belief-driven bots simulate a crowd so judges can watch prices converge toward a hidden probability in real time.
+**Knightshi** is a UCF-themed binary prediction-market simulation built with virtual credits for the **BloomKnights** competition. Users buy YES/NO shares in demo markets, prices move through a constant-product market maker (CPMM), and belief-driven bots simulate a crowd so judges can watch prices converge toward a hidden probability in real time.
 
 This is a simulation only. It uses virtual credits and is not gambling.
 
@@ -73,7 +73,7 @@ Admin-triggered bots trade from private beliefs sampled around a hardcoded `p_tr
 ## Project Structure
 
 ```text
-UCF-Prediction-Market/
+Knightshi/   (repo folder may still be UCF-Prediction-Market-)
 ├── README.md
 ├── AGENTS.md
 ├── CLAUDE.md
@@ -165,4 +165,4 @@ For AI-assisted development, start new coding sessions by reading:
 
 ## Disclaimer
 
-UCF Prediction Market is a prediction-market simulation for demonstration and education. It uses virtual credits only.
+Knightshi is a prediction-market simulation for demonstration and education. It uses virtual credits only.

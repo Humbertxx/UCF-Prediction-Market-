@@ -1,4 +1,4 @@
-# UCF Prediction Market backend — locked stack packages
+# Knightshi backend — locked stack packages
 #
 # Setup:
 #   python -m venv .venv

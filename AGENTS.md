@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Cross-agent operating guide for Cursor, Claude Code, Codex, Gemini CLI, and similar assistants working on the UCF Prediction Market project (BloomKnights competition entry).
+Cross-agent operating guide for Cursor, Claude Code, Codex, Gemini CLI, and similar assistants working on **Knightshi** (UCF-themed prediction market, BloomKnights competition entry).
 
 ## Read Order
 
@@ -96,7 +96,7 @@ Do not start with UI polish, bots, or Gemini before the backend trading path is 
 
 ## Gemini Rules
 
-- Use the unified `google-genai` SDK only.
+- Use the unified `google-genai` SDK only; model is `gemini-3.5-flash` in `backend/ai/insight_engine.py`.
 - Do not install or use the legacy `google-generativeai` package.
 - Keep `GEMINI_API_KEY` server-side.
 - Build exactly one AI feature: a market insight explaining what the price/time series suggests.

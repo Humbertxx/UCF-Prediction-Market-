@@ -3,7 +3,7 @@
 AI feature guidance (insights, summaries, assistant outputs).
 
 - Build exactly one AI product feature: market insight over price/time data.
-- Use Gemini through `google-genai` only.
+- Use Gemini through `google-genai` only; model is `gemini-3.5-flash` (see `backend/ai/insight_engine.py`).
 - Do not install or use the legacy `google-generativeai` package.
 - Keep `GEMINI_API_KEY` server-side; never expose it through Vite.
 - Prefer structured JSON output with a schema.

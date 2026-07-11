@@ -79,7 +79,7 @@ export default function Login() {
   return (
     <main className="mx-auto flex max-w-md flex-col px-4 py-12">
       <p className="font-display text-sm font-medium uppercase tracking-[0.16em] text-gold-ink">
-        UCF Prediction Market
+        Knightshi
       </p>
       <h1 className="mt-3 font-display text-3xl font-semibold text-ink">
         Sign in

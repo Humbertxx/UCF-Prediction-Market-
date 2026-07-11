@@ -8,7 +8,7 @@ If this file and a prompt conflict, this file wins unless the user explicitly ov
 
 1. Use Tailwind utilities only. No second CSS framework.
 2. Never hardcode hex values in components. Use tokens from this file.
-3. Keep one visual hero only: the live probability bar.
+3. One visual hero per page type: marketing home uses the landing hero band; market/trading pages use the live probability bar.
 4. Keep UI calm and data-forward. Numbers are the primary content.
 5. Use monospace with tabular numbers for price, odds, credits, shares, and PnL.
 6. Preserve clear YES (green) and NO (red) semantics.
@@ -17,6 +17,8 @@ If this file and a prompt conflict, this file wins unless the user explicitly ov
 9. Respect `prefers-reduced-motion` and maintain keyboard-visible focus.
 
 ## 2) Brand Direction
+
+Product name: **Knightshi**.
 
 Design metaphor: campus exchange floor.
 
@@ -27,6 +29,7 @@ Design metaphor: campus exchange floor.
   - no neon cyberpunk
   - no ultra-thin broadsheet styling
 - Anchor palette on UCF black and gold, but spend gold sparingly.
+- Brand first: on marketing surfaces, **Knightshi** is a hero-level signal, not only nav text.
 
 ## 3) Design Priorities (Ordered)
 
@@ -229,7 +232,66 @@ theme: {
 }
 ```
 
-## 14) AI Decision Tree (When Unsure)
+## 14) Landing Page (Home)
+
+The home route (`/`) is a section-by-section marketing page. It explains the product; it is not a trading surface.
+
+### Section order (fixed)
+
+1. **Hero** — full-bleed dark band, optional background image, rotating headline.
+2. **How it works** — three steps (browse → trade → track).
+3. **Markets preview** — up to three live `MarketCard` components.
+4. **Platform features** — probability bar, AI brief, portfolio.
+5. **Campus demo** — seeded category examples on deck background.
+6. **Final CTA** — login / markets entry.
+
+### Hero band (Polymarket-inspired)
+
+- Full width, min-height ~`88vh`, `--deck` base with gradient overlays.
+- Background image is optional and loaded from static assets (see below).
+- Eyebrow: gold uppercase label (`Knightshi`).
+- **Rotating headline**: 4 lines, **3 second** interval, fade transition ~280ms.
+- Static subline below the rotator (does not rotate).
+- Primary CTA: gold fill; secondary: ghost on dark.
+- Phase dots under CTAs — one per rotating line; active dot uses `--gold`.
+
+### Hero assets folder
+
+Upload images to:
+
+`frontend/public/landing/`
+
+| File | Role |
+| --- | --- |
+| `hero-background.webp` | Primary hero background (recommended) |
+| `hero-background.jpg` | Fallback |
+| `hero-background.png` | Second fallback |
+
+Served at `/landing/…`. If no file loads, use deck gradient only — do not break layout.
+
+Optional section art: `section-how-it-works.webp`, `section-campus.webp` (documented in that folder’s README).
+
+### Landing motion
+
+| Element | Behavior | Duration |
+| --- | --- | --- |
+| Hero headline rotation | Fade out/in between lines | 280ms transition, 3000ms hold |
+| Phase dots | Width expand on active | 300ms |
+| Hero background | Opacity fade-in on load | 500ms |
+
+For `prefers-reduced-motion: reduce`:
+
+- Stop headline rotation; show the first line only.
+- Keep phase dots static on the first line.
+- No fade on headline swap.
+
+### Landing vs trading
+
+- Do not embed a trade panel or live chart in the home hero.
+- Use real market cards only in the preview section (API-driven).
+- Keep footer legal line on the global app shell, not duplicated in every section.
+
+## 15) AI Decision Tree (When Unsure)
 
 If an AI must choose between options:
 
@@ -237,6 +299,7 @@ If an AI must choose between options:
 2. Choose existing token/class reuse over new styling.
 3. Choose explicit labels over short/clever labels.
 4. Choose stable layout over motion-heavy interaction.
-5. Choose probability-bar clarity over any decorative element.
+5. On market pages, choose probability-bar clarity over decorative UI.
+6. On the landing page, choose clear section rhythm over a single dense block.
 
 If still ambiguous, ask the user before introducing new visual patterns.

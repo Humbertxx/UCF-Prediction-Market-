@@ -20,7 +20,7 @@ export default function AppHeader() {
     <header className="border-b border-line bg-deck text-card">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <Link to="/" className="font-display text-body font-semibold tracking-tight">
-          UCF Prediction Market
+          Knightshi
         </Link>
 
         <nav className="flex flex-wrap items-center gap-1">

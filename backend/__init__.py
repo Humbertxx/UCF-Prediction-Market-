@@ -1,1 +1,1 @@
-"""UCF Prediction Market backend package."""
+"""Knightshi backend package."""

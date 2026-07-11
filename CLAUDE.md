@@ -1,4 +1,4 @@
-Agent-facing context auto-loaded by Claude Code from repo root. Read `AGENTS.md` for build order and detailed guardrails, `DESIGN.md` for UI guidance, and `.cursor/rules/*.mdc` for Cursor-scoped rules. `README.md` is the public project overview.
+Agent-facing context auto-loaded by Claude Code from repo root. Product name: **Knightshi** (UCF-themed prediction market). Read `AGENTS.md` for build order and detailed guardrails, `DESIGN.md` for UI guidance, and `.cursor/rules/*.mdc` for Cursor-scoped rules. `README.md` is the public project overview.
 
 # Prime directives
 
@@ -13,7 +13,7 @@ Agent-facing context auto-loaded by Claude Code from repo root. Read `AGENTS.md`
 
 - Frontend: React 18 + TS + **Vite** + **Tailwind** + Recharts + `@supabase/supabase-js` + Axios. No React Native, no other CSS framework.
 - Backend: FastAPI + SQLAlchemy + Alembic + Supabase Postgres/Realtime + JWT.
-- AI: **Gemini `gemini-2.5-flash` via `google-genai`** (NOT google-generativeai, NOT Groq/llama). JSON via response_mime_type + response_schema. Key server-side.
+- AI: **Gemini `gemini-3.5-flash` via `google-genai`** (NOT google-generativeai, NOT Groq/llama). JSON via response_mime_type + response_schema. Key server-side.
 - Auth: Google OAuth reused from StudySpot.
 - Out of scope: blockchain, wallets, Solana, or any on-chain features/packages.
 
