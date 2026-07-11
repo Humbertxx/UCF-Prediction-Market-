@@ -2,10 +2,12 @@
 # In the Railway dashboard: Root Directory = /frontend
 # Config path for this service: /frontend/railway.toml
 # Suggested watch paths: /frontend/**
+#
+# Build/install live in nixpacks.toml only — do not set buildCommand here
+# (a second npm ci fails with EBUSY on node_modules/.cache).
 
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm ci && npm run build"
 
 [deploy]
 startCommand = "./caddy run --config ./Caddyfile --adapter caddyfile"

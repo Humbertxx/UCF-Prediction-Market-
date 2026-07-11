@@ -1,6 +1,10 @@
 # Nixpacks config for the Railway frontend service (Root Directory = /frontend).
 # Do not put caddy in nixPkgs alongside node — Nix profile conflicts on fish completions.
 # Ship a Caddy binary next to the app instead.
+# Leave railway.toml buildCommand empty — a second npm ci causes EBUSY on node_modules/.cache.
+
+[variables]
+NIXPACKS_NODE_VERSION = "20"
 
 [phases.setup]
 nixPkgs = ["..."]
@@ -8,6 +12,7 @@ nixPkgs = ["..."]
 [phases.install]
 cmds = [
   "curl -fsSL https://github.com/caddyserver/caddy/releases/download/v2.9.1/caddy_2.9.1_linux_amd64.tar.gz | tar -xz caddy",
+  "rm -rf node_modules/.cache",
   "npm ci",
 ]
 
