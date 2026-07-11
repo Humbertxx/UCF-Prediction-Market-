@@ -34,7 +34,7 @@ from backend.services import amm
 
 logger = logging.getLogger(__name__)
 
-PROMPT_VERSION = "v1"
+PROMPT_VERSION = "v2"
 GEMINI_MODEL = "gemini-2.5-flash"
 
 # Keep prompts compact: only the most recent trades matter for "recent action".
@@ -70,53 +70,127 @@ def _too_few_trades_insight(trade_count: int) -> MarketInsight:
     )
 
 
+def _trade_series_stats(trades: Sequence) -> dict:
+    """Derive simple, checkable facts from the trade list for prompt grounding."""
+    if not trades:
+        return {
+            "trade_count_in_series": 0,
+            "first_yes_price_bps": None,
+            "last_yes_price_bps": None,
+            "yes_price_change_bps": 0,
+            "yes_buy_count": 0,
+            "no_buy_count": 0,
+            "bot_trade_count": 0,
+        }
+
+    first_price = trades[0].yes_price_bps
+    last_price = trades[-1].yes_price_bps
+    yes_buys = sum(
+        1 for t in trades if getattr(t.side, "value", t.side) == "yes"
+    )
+    no_buys = len(trades) - yes_buys
+    bot_count = sum(1 for t in trades if t.is_bot)
+
+    return {
+        "trade_count_in_series": len(trades),
+        "first_yes_price_bps": first_price,
+        "last_yes_price_bps": last_price,
+        "yes_price_change_bps": last_price - first_price,
+        "yes_buy_count": yes_buys,
+        "no_buy_count": no_buys,
+        "bot_trade_count": bot_count,
+    }
+
+
 def build_prompt(market, trades: Sequence) -> str:
     """Build the versioned insight prompt from demo market data only.
 
-    Sends market title/status/current price and a compact recent-trade series.
-    Never includes user identifiers, wallet balances, or the hidden p_true.
+    Sends market title/status/current price, derived series statistics, and a
+    compact recent-trade list. Never includes user identifiers, wallet balances,
+    or the hidden p_true.
     """
     recent = list(trades)[-MAX_TRADES_IN_PROMPT:]
+    current_yes_price_bps = amm.get_yes_price_bps(market.pool_yes, market.pool_no)
+    series_stats = _trade_series_stats(recent)
+
     payload = {
         "market": {
             "title": market.title,
             "status": getattr(market.status, "value", market.status),
-            "current_yes_price_bps": amm.get_yes_price_bps(
-                market.pool_yes, market.pool_no
-            ),
+            "current_yes_price_bps": current_yes_price_bps,
+            "current_yes_price_percent": round(current_yes_price_bps / 100, 1),
         },
+        "series_stats": series_stats,
         "trades": [
             {
                 "t": trade.created_at.isoformat() if trade.created_at else None,
                 "side": getattr(trade.side, "value", trade.side),
                 "price_bps": trade.yes_price_bps,
+                "price_percent": round(trade.yes_price_bps / 100, 1),
                 "credits": trade.cost_credits,
                 "bot": bool(trade.is_bot),
             }
             for trade in recent
         ],
     }
+
     return (
         f"[prompt_version={PROMPT_VERSION}]\n"
-        "You are the market commentary widget for a campus prediction-market "
-        "simulation that uses virtual credits with no cash value.\n"
-        "Read the recent trade series for one binary YES/NO market and explain "
-        "what the price action suggests.\n"
-        "Rules:\n"
-        "- This is a simulation. Do not give financial advice and do not make "
-        "claims about the real-world outcome of the market question.\n"
-        "- Speak plainly in terms of credits, shares, and price. Never mention "
-        "pools, invariants, liquidity math, or internal mechanics.\n"
-        "- price_bps is the YES price in basis points: 6100 means 0.61, i.e. "
-        "the crowd prices YES at 61%.\n"
-        "- Base every statement only on the data below; 'bot' marks simulated "
-        "traders.\n"
-        "- trend is from the YES side's perspective: bullish_yes means the YES "
-        "price is moving up.\n"
-        "- summary: 1-2 short sentences. key_observation: one concrete pattern "
-        "from the trades, e.g. 'YES buying accelerated over the last 5 trades.'\n"
-        "Respond with JSON matching the provided schema.\n\n"
-        f"Market data:\n{json.dumps(payload, indent=2)}\n"
+        "ROLE\n"
+        "You write short commentary for a campus prediction-market simulation. "
+        "Traders use virtual credits only. There is no real money and no "
+        "guaranteed real-world outcome.\n\n"
+        "TASK\n"
+        "Read ONLY the JSON market data below and describe what the recent YES "
+        "price action suggests. You are summarizing the trade series, not "
+        "predicting the real-world event named in the market title.\n\n"
+        "DATA DICTIONARY (use these meanings exactly)\n"
+        "- current_yes_price_bps / price_bps: YES probability in basis points. "
+        "6100 means 61.0%.\n"
+        "- side: whether that trade bought YES or NO shares.\n"
+        "- credits: virtual credits spent on that trade.\n"
+        "- bot: true means a simulated trader, not a human.\n"
+        "- series_stats.trade_count_in_series: number of trades you may cite.\n"
+        "- series_stats.first_yes_price_bps / last_yes_price_bps: YES price at "
+        "the start and end of the provided series.\n"
+        "- series_stats.yes_price_change_bps: last minus first YES price in the "
+        "series (positive = YES price rose over the series).\n"
+        "- series_stats.yes_buy_count / no_buy_count: how many YES vs NO buys "
+        "appear in the series.\n\n"
+        "STRICT GROUNDING RULES (anti-hallucination)\n"
+        "1. Use ONLY facts present in the JSON. Do not invent trades, prices, "
+        "timestamps, users, volumes, or outcomes that are not listed.\n"
+        "2. Do NOT predict whether the real-world event will happen. Do not say "
+        "'UCF will win', 'the exam mean will be above 80', or similar.\n"
+        "3. Do NOT mention hidden probabilities, true odds, pools, AMM math, "
+        "liquidity, k constants, or any backend mechanics.\n"
+        "4. Do NOT mention user identities, emails, wallets, balances, or P/L.\n"
+        "5. If the series is short or noisy, say so and lower confidence instead "
+        "of guessing.\n"
+        "6. Every number you mention (percent, count, direction) must be "
+        "derivable from the JSON or series_stats.\n"
+        "7. If yes_price_change_bps is near zero, prefer trend='flat' or "
+        "trend='mixed', not a strong directional call.\n"
+        "8. If YES and NO buys are both common and price moved little, use "
+        "trend='mixed'.\n\n"
+        "TREND FIELD (YES-price perspective)\n"
+        "- bullish_yes: YES price clearly rose over the series "
+        "(yes_price_change_bps meaningfully positive).\n"
+        "- bearish_yes: YES price clearly fell over the series "
+        "(yes_price_change_bps meaningfully negative).\n"
+        "- flat: YES price stayed roughly unchanged.\n"
+        "- mixed: conflicting signals (e.g. both sides active with choppy price).\n"
+        "Never output 'unknown'.\n\n"
+        "CONFIDENCE FIELD\n"
+        "- high: many trades in series_stats and a clear directional move.\n"
+        "- medium: moderate trade count or a visible but not dominant move.\n"
+        "- low: few trades, small price change, or choppy/mixed activity.\n\n"
+        "OUTPUT FIELD GUIDANCE\n"
+        "- summary: 1-2 short sentences. Describe price action only.\n"
+        "- key_observation: one concrete, verifiable pattern from the series "
+        "(cite counts or bps change when helpful).\n"
+        "- Respond with JSON matching the provided schema exactly. No markdown.\n\n"
+        f"MARKET DATA (sole source of truth):\n{json.dumps(payload, indent=2)}\n"
     )
 
 
@@ -155,7 +229,7 @@ def generate_insight(market, trades: Sequence) -> MarketInsight:
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     response_schema=GeminiInsight,
-                    temperature=0.4,
+                    temperature=0.2,
                 ),
             )
             validated = GeminiInsight.model_validate_json(response.text or "")

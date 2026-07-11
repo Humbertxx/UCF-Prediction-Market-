@@ -39,6 +39,19 @@ class TradeResult:
     balance_after: int
 
 
+@dataclass
+class BotTradeResult:
+    """Result of a bot trade (pools only — no wallet or position)."""
+
+    trade_id: int
+    market_id: str
+    side: TradeSide
+    shares: int
+    cost: int
+    yes_price_bps: int
+    bot_label: str
+
+
 def execute_trade(
     db: Session,
     *,
@@ -139,4 +152,72 @@ def execute_trade(
         cost=cost,
         yes_price_bps=yes_price_bps,
         balance_after=wallet.balance_credits,
+    )
+
+
+def execute_bot_trade(
+    db: Session,
+    *,
+    market_id,
+    side: TradeSide,
+    amount: int,
+    bot_label: str = "belief",
+) -> BotTradeResult:
+    """Execute a simulated bot buy that only moves market pools.
+
+    Bots do not debit wallets or create positions. They record an immutable
+    trade row with ``user_id`` NULL and ``is_bot`` True for charts and insight.
+    """
+    if amount <= 0:
+        raise TradeError("Trade amount must be a positive integer", status_code=422)
+
+    market = db.execute(
+        select(Market).where(Market.id == market_id).with_for_update()
+    ).scalar_one_or_none()
+    if market is None:
+        raise TradeError("Market not found", status_code=404)
+    if market.status != MarketStatus.trading:
+        raise TradeError("Market is not open for trading", status_code=409)
+
+    if side == TradeSide.yes:
+        shares, cost, new_yes, new_no = amm.buy_yes(market.pool_yes, market.pool_no, amount)
+    else:
+        shares, cost, new_yes, new_no = amm.buy_no(market.pool_yes, market.pool_no, amount)
+
+    if shares <= 0:
+        raise TradeError(
+            "Amount too small to buy any shares at the current price",
+            status_code=422,
+        )
+
+    yes_price_bps = amm.get_yes_price_bps(new_yes, new_no)
+
+    market.pool_yes = new_yes
+    market.pool_no = new_no
+
+    trade = Trade(
+        market_id=market_id,
+        user_id=None,
+        is_bot=True,
+        bot_label=bot_label,
+        side=side,
+        cost_credits=cost,
+        shares=shares,
+        yes_price_bps=yes_price_bps,
+        pool_yes_after=new_yes,
+        pool_no_after=new_no,
+    )
+    db.add(trade)
+
+    db.commit()
+    db.refresh(trade)
+
+    return BotTradeResult(
+        trade_id=trade.id,
+        market_id=str(market_id),
+        side=side,
+        shares=shares,
+        cost=cost,
+        yes_price_bps=yes_price_bps,
+        bot_label=bot_label,
     )

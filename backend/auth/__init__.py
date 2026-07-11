@@ -1,8 +1,6 @@
 """Authentication package.
 
-StudySpot integration seam: the reused StudySpot backend owns the real Google
-OAuth flow, User model, and JWT issuance. The modules here provide a minimal,
-standards-compatible stand-in (a User model and a bearer-token verifier) so the
-market/trade/position layer is runnable and testable before StudySpot lands.
-Replace or re-point these imports when StudySpot is dropped in.
+Mode B standalone: StudySpot-shaped User + JWT verification helpers, plus a
+local demo login (``POST /auth/demo``). Google OAuth is not required for the
+hackathon demo path.
 """

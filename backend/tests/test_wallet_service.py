@@ -31,7 +31,7 @@ def test_ensure_wallet_is_idempotent(db: Session, user: User) -> None:
 def test_grant_wallets_for_all_users_only_creates_missing(
     db: Session, user: User
 ) -> None:
-    other = User(email="other@example.com", display_name="Other")
+    other = User(google_id="google-other-001", email="other@example.com", name="Other")
     db.add(other)
     db.commit()
 

@@ -11,6 +11,7 @@ from backend.auth.dependencies import (
     credentials_error,
     decode_token,
     get_current_admin,
+    get_current_user_id,
     get_user_from_payload,
 )
 from backend.auth.user import User
@@ -65,6 +66,10 @@ def test_get_current_admin_rejects_non_admin(user: User) -> None:
     with pytest.raises(HTTPException) as exc:
         get_current_admin(user=user)
     assert exc.value.status_code == 403
+
+
+def test_get_current_user_id(user: User) -> None:
+    assert get_current_user_id(current_user=user) == user.id
 
 
 def test_credentials_error_shape() -> None:

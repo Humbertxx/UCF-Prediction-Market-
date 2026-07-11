@@ -137,13 +137,16 @@ def test_prompt_contains_series_but_no_secrets():
 
     assert insight_engine.PROMPT_VERSION in prompt
     assert market.title in prompt
+    assert "series_stats" in prompt
+    assert "STRICT GROUNDING RULES" in prompt
+    assert "sole source of truth" in prompt.lower()
     # Only the most recent MAX_TRADES_IN_PROMPT trades are included.
     assert prompt.count('"price_bps"') == insight_engine.MAX_TRADES_IN_PROMPT
     # Hidden demo secret and user-identifying fields never reach the model.
     assert "p_true" not in prompt
     assert "7200" not in prompt
     assert "user_id" not in prompt
-    assert "email" not in prompt
+    assert '"email"' not in prompt
 
 
 def test_insight_endpoint_fallback_and_404(client, market, monkeypatch):

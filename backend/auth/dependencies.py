@@ -1,8 +1,12 @@
 """Shared auth helper file.
 
-Login-check helpers are kept in one reusable place. Routes depend on
-``get_current_user`` / ``get_current_admin`` so StudySpot can swap internals
+Login-check helpers live in one place (StudySpot pattern). Routes depend on
+``get_current_user`` / ``get_current_admin`` so auth internals can change
 without touching market/trade/position handlers.
+
+Mode B (standalone): tokens are issued by ``POST /auth/demo``. Google OAuth
+is optional later; verification shape stays StudySpot-compatible (``sub`` =
+user UUID).
 """
 
 from __future__ import annotations
@@ -16,12 +20,12 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from backend.auth.user import User
+from backend.config import get_settings
 from backend.database import get_db
 from backend.services import auth_service
 
-# tokenUrl documents the login endpoint for OpenAPI; actual Google route TBD.
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/google", auto_error=False)
-optional_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/google", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/demo", auto_error=False)
+optional_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/demo", auto_error=False)
 
 
 def credentials_error() -> HTTPException:
@@ -79,7 +83,7 @@ def get_current_user(
     token: Optional[str] = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ) -> User:
-    """Required authentication dependency. Missing token fails."""
+    """Required authentication. Missing token fails."""
     if not token:
         raise credentials_error()
     payload = decode_token(token=token)
@@ -90,15 +94,25 @@ def get_optional_current_user(
     token: Optional[str] = Depends(optional_oauth2_scheme),
     db: Session = Depends(get_db),
 ) -> Optional[User]:
-    """Optional authentication: returns None when no token is supplied."""
+    """Optional authentication for logged-in users and guests."""
     if not token:
         return None
     payload = decode_token(token=token)
     return get_user_from_payload(db=db, payload=payload)
 
 
+def get_current_user_id(current_user: User = Depends(get_current_user)) -> uuid.UUID:
+    """Dependency that only exposes the authenticated user's id."""
+    return current_user.id
+
+
+def is_admin_user(user: User) -> bool:
+    """True when the user's email is in ``ADMIN_EMAILS`` (no is_admin column)."""
+    return user.email.lower() in get_settings().admin_email_set
+
+
 def get_current_admin(user: User = Depends(get_current_user)) -> User:
-    if not user.is_admin:
+    if not is_admin_user(user):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin privileges required",

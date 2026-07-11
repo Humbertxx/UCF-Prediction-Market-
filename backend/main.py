@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.config import get_settings
 from backend.database import Base, SessionLocal, engine
-from backend.routes import insights, markets, positions, trades
+from backend.routes import admin, auth, insights, markets, positions, trades
 from backend.services import market_service
 from backend.services.wallet_service import grant_wallets_for_all_users
 
@@ -27,6 +27,9 @@ async def lifespan(app: FastAPI):
         finally:
             db.close()
     yield
+    from backend.bots import bot_runner
+
+    await bot_runner.bot_runner.stop_all()
 
 
 def create_app() -> FastAPI:
@@ -44,10 +47,12 @@ def create_app() -> FastAPI:
     def health() -> dict[str, str]:
         return {"status": "ok"}
 
+    app.include_router(auth.router)
     app.include_router(markets.router)
     app.include_router(trades.router)
     app.include_router(positions.router)
     app.include_router(insights.router)
+    app.include_router(admin.router)
 
     return app
 

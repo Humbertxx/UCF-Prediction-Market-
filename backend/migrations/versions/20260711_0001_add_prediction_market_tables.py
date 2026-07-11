@@ -1,34 +1,78 @@
-"""Add prediction-market tables (markets, trades, positions, wallets).
+"""Add users + prediction-market tables (markets, trades, positions, wallets).
 
 Revision ID: 20260711_0001
 Revises:
 Create Date: 2026-07-11
 
-Additive migration: assumes the StudySpot ``users`` table already exists.
-Does not modify existing auth/user tables.
+Mode B (standalone): creates a StudySpot-compatible ``users`` table when
+missing, then market tables that FK to ``users.id``.
 """
 
 from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy import inspect
+from sqlalchemy.dialects.postgresql import ENUM
 
 revision: str = "20260711_0001"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-market_status = sa.Enum(
-    "seeded", "trading", "resolving", "resolved", name="market_status"
+# create_type=False: we create enums once below; column use must not recreate them.
+market_status = ENUM(
+    "seeded",
+    "trading",
+    "resolving",
+    "resolved",
+    name="market_status",
+    create_type=False,
 )
-market_outcome = sa.Enum("yes", "no", name="market_outcome")
-trade_side = sa.Enum("yes", "no", name="trade_side")
+market_outcome = ENUM("yes", "no", name="market_outcome", create_type=False)
+trade_side = ENUM("yes", "no", name="trade_side", create_type=False)
+
+
+def _create_users_if_missing() -> None:
+    """StudySpot-compatible users table for standalone Supabase / local DBs."""
+    bind = op.get_bind()
+    if "users" in inspect(bind).get_table_names():
+        return
+
+    op.create_table(
+        "users",
+        sa.Column("id", sa.Uuid(), nullable=False),
+        sa.Column("google_id", sa.String(length=255), nullable=False),
+        sa.Column("email", sa.String(length=320), nullable=False),
+        sa.Column("name", sa.String(length=255), nullable=True),
+        sa.Column("profile_picture", sa.String(length=500), nullable=True),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+            nullable=False,
+        ),
+        sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("google_id"),
+        sa.UniqueConstraint("email"),
+    )
 
 
 def upgrade() -> None:
-    market_status.create(op.get_bind(), checkfirst=True)
-    market_outcome.create(op.get_bind(), checkfirst=True)
-    trade_side.create(op.get_bind(), checkfirst=True)
+    _create_users_if_missing()
+
+    bind = op.get_bind()
+    ENUM(
+        "seeded", "trading", "resolving", "resolved", name="market_status"
+    ).create(bind, checkfirst=True)
+    ENUM("yes", "no", name="market_outcome").create(bind, checkfirst=True)
+    ENUM("yes", "no", name="trade_side").create(bind, checkfirst=True)
 
     op.create_table(
         "markets",
@@ -156,6 +200,11 @@ def downgrade() -> None:
     op.drop_table("markets")
 
     bind = op.get_bind()
-    trade_side.drop(bind, checkfirst=True)
-    market_outcome.drop(bind, checkfirst=True)
-    market_status.drop(bind, checkfirst=True)
+    ENUM("yes", "no", name="trade_side").drop(bind, checkfirst=True)
+    ENUM("yes", "no", name="market_outcome").drop(bind, checkfirst=True)
+    ENUM(
+        "seeded", "trading", "resolving", "resolved", name="market_status"
+    ).drop(bind, checkfirst=True)
+
+    # Standalone Mode B only: do not drop users if this DB was shared / pre-existing.
+    # Fresh demo DBs recreate users via upgrade(); leave the table on downgrade.

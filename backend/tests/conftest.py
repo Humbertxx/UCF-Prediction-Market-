@@ -35,7 +35,11 @@ def db() -> Session:
 
 @pytest.fixture
 def user(db: Session) -> User:
-    user = User(email="trader@example.com", display_name="Trader")
+    user = User(
+        google_id="google-trader-001",
+        email="trader@example.com",
+        name="Trader",
+    )
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -44,7 +48,12 @@ def user(db: Session) -> User:
 
 @pytest.fixture
 def admin_user(db: Session) -> User:
-    user = User(email="admin@example.com", display_name="Admin", is_admin=True)
+    admin_email = next(iter(get_settings().admin_email_set), "admin@example.com")
+    user = User(
+        google_id="google-admin-001",
+        email=admin_email,
+        name="Admin",
+    )
     db.add(user)
     db.commit()
     db.refresh(user)
