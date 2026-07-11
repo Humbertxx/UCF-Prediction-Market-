@@ -1,5 +1,5 @@
 /**
- * Full-bleed marketing hero — animated GIF background, gold/black system, live market cards.
+ * Full-bleed marketing hero — animated GIF background, gold/black system.
  */
 
 import { motion } from "framer-motion";
@@ -11,7 +11,6 @@ import {
   LANDING_HERO_ANIMATED_BACKGROUND,
   LANDING_HERO_STATIC_BACKGROUNDS,
 } from "../../lib/landing";
-import MarketCardGrid from "./MarketCardGrid";
 import { MotionLink } from "../../motion/components/MotionButton";
 import { useMotionSafe } from "../../motion/hooks/useMotionSafe";
 
@@ -137,22 +136,6 @@ export default function HeroSection() {
           >
             How It Works
           </MotionLink>
-        </motion.div>
-
-        <motion.div
-          variants={motionSafe.variants({
-            hidden: { opacity: 0, y: 32 },
-            visible: {
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.7, delay: 0.45, ease: EASE },
-            },
-          })}
-          initial={motionInitial}
-          animate={motionAnimate}
-          className="mt-10 w-full sm:mt-16"
-        >
-          <MarketCardGrid density="compact" hideEmptyState />
         </motion.div>
       </div>
     </section>
