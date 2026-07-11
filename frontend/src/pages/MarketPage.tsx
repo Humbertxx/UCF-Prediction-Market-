@@ -5,7 +5,7 @@
 import { Link, useParams } from "react-router-dom";
 
 import MarketInsight from "../components/market/MarketInsight";
-import PriceChartPlaceholder from "../components/market/PriceChartPlaceholder";
+import PriceChart from "../components/market/PriceChart";
 import ProbabilityBar from "../components/market/ProbabilityBar";
 import TradeFeed from "../components/market/TradeFeed";
 import TradePanel from "../components/market/TradePanel";
@@ -30,6 +30,13 @@ export default function MarketPage() {
     realtimeConnected,
     refresh: refreshTrades,
   } = useTrades(marketId);
+
+  // Prefer latest trade price so the bar tracks bots/polling without waiting
+  // for a full market refetch.
+  const liveYesPriceBps =
+    priceHistory.length > 0
+      ? priceHistory[priceHistory.length - 1].yes_price_bps
+      : (market?.yes_price_bps ?? 5000);
 
   function handleTradeSuccess() {
     void refreshMarket();
@@ -91,16 +98,16 @@ export default function MarketPage() {
         </div>
 
         <ProbabilityBar
-          yesPriceBps={market.yes_price_bps}
+          yesPriceBps={liveYesPriceBps}
           className="mt-6"
         />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className="space-y-6">
-          <PriceChartPlaceholder
+          <PriceChart
             priceHistory={priceHistory}
-            currentYesPriceBps={market.yes_price_bps}
+            currentYesPriceBps={liveYesPriceBps}
             loading={tradesStatus === "loading"}
           />
           <TradeFeed

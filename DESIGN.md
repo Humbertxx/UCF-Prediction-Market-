@@ -139,11 +139,6 @@ Constraint:
 - New rows can animate in, but do not distract from chart and bar.
 - Include timestamp and compact action summary.
 
-### Leaderboard
-
-- Favor readable rows and aligned numbers over decorative cards.
-- Make rank movement and PnL easy to scan.
-
 ### Admin Controls
 
 - Keep admin controls clearly separated from user trading actions.

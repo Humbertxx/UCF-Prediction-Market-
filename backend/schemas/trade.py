@@ -46,3 +46,19 @@ class TradeHistoryItem(BaseModel):
     is_bot: bool
     bot_label: Optional[str] = None
     created_at: datetime
+
+
+class UserTradeHistoryItem(BaseModel):
+    """A user's trade with market context for portfolio activity."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    market_id: uuid.UUID
+    market_title: str
+    market_slug: str
+    side: TradeSide
+    shares: int
+    cost_credits: int
+    yes_price_bps: int
+    created_at: datetime

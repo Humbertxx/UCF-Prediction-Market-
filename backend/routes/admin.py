@@ -16,13 +16,16 @@ from backend.bots.scripted_sequence import (
 )
 from backend.database import get_db
 from backend.schemas.admin import (
+    ResolveMarketRequest,
+    ResolveMarketResponse,
     SimulateBurstRequest,
     SimulateBurstResponse,
     SimulateStartRequest,
     SimulateStatusResponse,
     SimulateStopRequest,
 )
-from backend.services import market_service, trade_service
+from backend.services import market_service, resolution_service, trade_service
+from backend.models.enums import MarketOutcome
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -129,4 +132,32 @@ def simulate_burst(
         mode=payload.mode,
         trades_executed=executed,
         yes_price_bps=market_service.yes_price_bps(market),
+    )
+
+
+@router.post("/markets/{market_id}/resolve", response_model=ResolveMarketResponse)
+def resolve_market(
+    market_id: uuid.UUID,
+    payload: ResolveMarketRequest,
+    db: Session = Depends(get_db),
+    admin: User = Depends(get_current_admin),
+) -> ResolveMarketResponse:
+    outcome = MarketOutcome(payload.outcome)
+    try:
+        result = resolution_service.resolve_market(
+            db,
+            market_id=market_id,
+            outcome=outcome,
+            resolved_by=admin.id,
+            evidence=payload.evidence,
+        )
+    except resolution_service.ResolutionError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.message) from exc
+
+    return ResolveMarketResponse(
+        market_id=result.market_id,
+        outcome=result.outcome.value,
+        positions_settled=result.positions_settled,
+        total_payout_credits=result.total_payout_credits,
+        resolved_at=result.resolved_at,
     )

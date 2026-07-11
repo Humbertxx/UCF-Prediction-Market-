@@ -20,6 +20,7 @@ import type {
   TradeCreatePayload,
   TradeHistoryItem,
   TradeResult,
+  UserTradeHistoryItem,
   Wallet,
 } from "../types/market";
 
@@ -59,7 +60,10 @@ async function parseError(response: Response): Promise<string> {
 export async function apiRequest<T>(
   path: string,
   init: RequestInit = {},
-  options: { auth?: boolean } = { auth: true },
+  options: { auth?: boolean; clearSessionOn401?: boolean } = {
+    auth: true,
+    clearSessionOn401: true,
+  },
 ): Promise<ApiResponse<T>> {
   const headers = new Headers(init.headers);
   if (!headers.has("Content-Type") && init.body) {
@@ -76,7 +80,7 @@ export async function apiRequest<T>(
       headers,
     });
 
-    if (response.status === 401 && options.auth !== false) {
+    if (response.status === 401 && options.auth !== false && options.clearSessionOn401 !== false) {
       clearAuthSession();
     }
 
@@ -97,7 +101,11 @@ export async function apiRequest<T>(
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Network request failed.";
-    return { success: false, data: null, error: message };
+    const hint =
+      message.includes("Failed to fetch") || message.includes("NetworkError")
+        ? " Is the API running at " + API_BASE_URL + "?"
+        : "";
+    return { success: false, data: null, error: message + hint };
   }
 }
 
@@ -236,4 +244,110 @@ export async function getMyMarketPosition(
 
 export function getMyPositions(): Promise<Position[]> {
   return apiGet<Position[]>("/positions");
+}
+
+export function getMyTrades(
+  limit = 100,
+  marketId?: string,
+): Promise<UserTradeHistoryItem[]> {
+  const params = new URLSearchParams({ limit: String(limit) });
+  if (marketId) params.set("market_id", marketId);
+  return apiGet<UserTradeHistoryItem[]>(`/users/me/trades?${params}`);
+}
+
+// ---- Admin ----
+
+export interface ResolveMarketPayload {
+  outcome: "yes" | "no";
+  evidence?: string;
+}
+
+export interface ResolveMarketResult {
+  market_id: string;
+  outcome: string;
+  positions_settled: number;
+  total_payout_credits: number;
+  resolved_at: string;
+}
+
+export async function resolveMarket(
+  marketId: string,
+  payload: ResolveMarketPayload,
+): Promise<ApiResponse<ResolveMarketResult>> {
+  return apiRequest<ResolveMarketResult>(
+    `/admin/markets/${marketId}/resolve`,
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+  );
+}
+
+// ---- Admin bot simulation ----
+
+export type SimulateMode = "belief" | "scripted";
+
+export interface SimulateStatus {
+  market_id: string;
+  running: boolean;
+  trades_executed: number;
+  skipped_ticks: number;
+  last_reason: string | null;
+}
+
+export interface SimulateBurstResult {
+  market_id: string;
+  mode: string;
+  trades_executed: number;
+  yes_price_bps: number;
+}
+
+export async function startSimulation(
+  marketId: string,
+  options: { bot_label?: string; rng_seed?: number } = {},
+): Promise<ApiResponse<SimulateStatus>> {
+  return apiRequest<SimulateStatus>("/admin/simulate/start", {
+    method: "POST",
+    body: JSON.stringify({
+      market_id: marketId,
+      bot_label: options.bot_label ?? "belief",
+      rng_seed: options.rng_seed ?? null,
+    }),
+  });
+}
+
+export async function stopSimulation(
+  marketId: string,
+): Promise<ApiResponse<SimulateStatus>> {
+  return apiRequest<SimulateStatus>("/admin/simulate/stop", {
+    method: "POST",
+    body: JSON.stringify({ market_id: marketId }),
+  });
+}
+
+export async function getSimulationStatus(
+  marketId: string,
+): Promise<ApiResponse<SimulateStatus>> {
+  return apiRequest<SimulateStatus>(`/admin/simulate/${marketId}/status`);
+}
+
+export async function simulateBurst(
+  marketId: string,
+  options: {
+    trade_count?: number;
+    mode?: SimulateMode;
+    bot_label?: string;
+    rng_seed?: number;
+  } = {},
+): Promise<ApiResponse<SimulateBurstResult>> {
+  return apiRequest<SimulateBurstResult>("/admin/simulate/burst", {
+    method: "POST",
+    body: JSON.stringify({
+      market_id: marketId,
+      trade_count: options.trade_count ?? 10,
+      mode: options.mode ?? "belief",
+      bot_label: options.bot_label ?? null,
+      rng_seed: options.rng_seed ?? null,
+    }),
+  });
 }

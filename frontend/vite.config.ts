@@ -1,6 +1,7 @@
+/// <reference types="vitest/config" />
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   // Tailwind v4 runs through this Vite plugin (no tailwind.config / PostCSS);
@@ -13,5 +14,9 @@ export default defineConfig({
     // Fail loudly if 5173 is taken — Google OAuth origins are registered for
     // http://localhost:5173; silently switching ports breaks GIS sign-in.
     strictPort: true,
+  },
+  test: {
+    environment: "node",
+    include: ["src/**/*.test.ts"],
   },
 });

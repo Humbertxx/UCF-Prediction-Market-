@@ -23,8 +23,9 @@ interface PortfolioPositionTableProps {
 }
 
 function positionPnl(position: Position, variant: PortfolioTableVariant): number {
-  if (variant === "history" && position.realized_pnl !== 0) {
-    return position.realized_pnl;
+  if (variant === "history") {
+    if (position.realized_pnl !== 0) return position.realized_pnl;
+    return position.unrealized_pnl;
   }
   return position.unrealized_pnl;
 }

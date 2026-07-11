@@ -9,6 +9,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from backend.auth.user import User
+from backend.models.enums import MarketStatus
 from backend.models.market import Market
 from backend.models.position import Position
 from backend.models.trade import Trade
@@ -56,7 +57,10 @@ def get_user_profile_stats(db: Session, user_id: uuid.UUID) -> UserProfileStatsD
 
     for position, market in rows:
         out = position_service.position_to_out(position, market)
-        pnl = out.realized_pnl + out.unrealized_pnl
+        if market.status == MarketStatus.resolved and position.realized_pnl != 0:
+            pnl = position.realized_pnl
+        else:
+            pnl = out.unrealized_pnl
         total_pnl += pnl
         category = infer_market_category(market.slug)
         category_totals[category] += pnl

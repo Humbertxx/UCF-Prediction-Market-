@@ -41,6 +41,18 @@ export interface TradeHistoryItem {
   created_at: string;
 }
 
+export interface UserTradeHistoryItem {
+  id: number;
+  market_id: string;
+  market_title: string;
+  market_slug: string;
+  side: TradeSide;
+  shares: number;
+  cost_credits: number;
+  yes_price_bps: number;
+  created_at: string;
+}
+
 export interface TradeCreatePayload {
   market_id: string;
   side: TradeSide;

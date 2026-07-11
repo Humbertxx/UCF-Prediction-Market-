@@ -44,7 +44,7 @@ Build in this order unless the user asks for a narrower task:
 4. Atomic trade execution.
 5. Realtime trade updates and polling fallback.
 6. Admin-triggered bot simulation.
-7. Frontend market list, detail page, trade panel, positions, and leaderboard.
+7. Frontend market list, detail page, trade panel, and positions.
 8. Gemini market insight.
 9. Admin resolution, payouts, and PnL.
 10. Demo polish and reliability checks.
@@ -58,9 +58,9 @@ Do not start with UI polish, bots, or Gemini before the backend trading path is 
 - Gate C: trade endpoint atomically updates trade, pools, user balance, and position.
 - Gate D: realtime updates work, with polling fallback.
 - Gate E: bot simulation visibly moves prices toward `p_true`.
-- Gate F: frontend demo path works from market list to trade to leaderboard.
+- Gate F: frontend demo path works from market list to trade to portfolio.
 - Gate G: Gemini insight renders from demo market data and degrades safely.
-- Gate H: admin resolution pays out correctly and recomputes leaderboard.
+- Gate H: admin resolution pays out correctly and updates portfolio PnL.
 
 ## Backend Rules
 
@@ -77,7 +77,7 @@ Do not start with UI polish, bots, or Gemini before the backend trading path is 
 - Use Recharts for market visualizations.
 - Keep Supabase client setup in `frontend/src/lib/supabase.ts`.
 - Keep HTTP API setup in `frontend/src/lib/api.ts`.
-- Prefer focused hooks such as `useMarket`, `useTrades`, `usePositions`, and `useLeaderboard`.
+- Prefer focused hooks such as `useMarket`, `useTrades`, and `usePositions`.
 - Demo states matter: handle loading, empty, error, and disconnected realtime states.
 
 ## Realtime Rules

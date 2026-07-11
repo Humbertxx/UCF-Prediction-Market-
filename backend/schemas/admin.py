@@ -5,6 +5,8 @@ from __future__ import annotations
 import uuid
 from typing import Literal, Optional
 
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 
@@ -42,3 +44,16 @@ class SimulateBurstResponse(BaseModel):
     mode: str
     trades_executed: int
     yes_price_bps: int
+
+
+class ResolveMarketRequest(BaseModel):
+    outcome: Literal["yes", "no"]
+    evidence: Optional[str] = Field(default=None, max_length=2000)
+
+
+class ResolveMarketResponse(BaseModel):
+    market_id: uuid.UUID
+    outcome: str
+    positions_settled: int
+    total_payout_credits: int
+    resolved_at: datetime

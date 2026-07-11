@@ -10,4 +10,4 @@ Backend implementation constraints.
 - Use integer credits and shares. Do not store floats for balances, positions, payouts, or trade amounts.
 - Trade execution must update market pools, trades, positions, and balances atomically.
 - Reuse `auth/` as-is unless explicitly requested to extend it.
-- Emit stable domain events for realtime and leaderboard recalculation.
+- Emit stable domain events for realtime trade updates.

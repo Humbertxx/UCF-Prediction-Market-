@@ -8,5 +8,4 @@ Database and migration conventions.
 - Store sufficient audit data to reconstruct trade history and P/L.
 - Seed exactly the demo markets needed for the public flow unless the user asks for more.
 - Prefer explicit indexes for market status and user-position lookups.
-- Keep denormalized leaderboard materializations transparent and reproducible.
 - Avoid destructive schema or data operations unless the user explicitly approves them.

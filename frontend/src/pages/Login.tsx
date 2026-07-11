@@ -6,10 +6,7 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
-import {
-  isGoogleAuthConfigured,
-  renderGoogleSignInButton,
-} from "../lib/googleAuth";
+import { isGoogleAuthConfigured, renderGoogleSignInButton } from "../lib/googleAuth";
 
 export default function Login() {
   const {
@@ -123,7 +120,7 @@ export default function Login() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-btn border border-line bg-surface px-3 py-2 text-base text-ink outline-none focus:ring-2 focus:ring-gold"
+            className="mt-1 w-full rounded-btn border border-line bg-surface px-3 py-2 text-base text-ink outline-hidden focus:ring-2 focus:ring-gold"
             placeholder="you@gmail.com"
           />
         </label>
@@ -136,7 +133,7 @@ export default function Login() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-btn border border-line bg-surface px-3 py-2 text-base text-ink outline-none focus:ring-2 focus:ring-gold"
+            className="mt-1 w-full rounded-btn border border-line bg-surface px-3 py-2 text-base text-ink outline-hidden focus:ring-2 focus:ring-gold"
             placeholder="Judge"
           />
         </label>

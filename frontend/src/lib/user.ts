@@ -56,9 +56,13 @@ async function fetchProfileStatsEnvelope(
   path: string,
   accessToken?: string,
 ): Promise<ApiResponse<CurrentUserProfile>> {
-  const response = await apiRequest<BackendProfileStatsEnvelope>(path, {
-    headers: accessToken ? authHeaders(accessToken) : undefined,
-  });
+  const response = await apiRequest<BackendProfileStatsEnvelope>(
+    path,
+    {
+      headers: accessToken ? authHeaders(accessToken) : undefined,
+    },
+    { clearSessionOn401: false },
+  );
 
   if (!response.success || !response.data) {
     return { success: false, data: null, error: response.error };

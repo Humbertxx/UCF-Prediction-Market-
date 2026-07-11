@@ -31,7 +31,7 @@ graph TB
 
     subgraph Backend["FastAPI Backend"]
         AUTH["Google OAuth -> app JWT"]
-        ROUTES["Markets, trades, positions, leaderboard, admin"]
+        ROUTES["Markets, trades, positions, admin"]
         AMM["CPMM service"]
         BOTS["Belief-driven bots"]
         AI["Gemini insight engine"]
@@ -63,7 +63,7 @@ graph TB
 
 Each market has YES and NO liquidity pools. The market maker preserves `x * y = k`, where `x` is the YES pool and `y` is the NO pool. A YES price is read approximately as `y / (x + y)`.
 
-Trades update the pools, user positions, trade history, and leaderboard. Supabase Realtime pushes new trades to connected clients, with a 3-second polling fallback for demo safety.
+Trades update the pools, user positions, and trade history. Supabase Realtime pushes new trades to connected clients, with a 3-second polling fallback for demo safety.
 
 Admin-triggered bots trade from private beliefs sampled around a hardcoded `p_true`, creating the live convergence that makes the demo readable without needing a large audience.
 

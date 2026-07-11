@@ -5,18 +5,26 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 
+import PortfolioActivityTable from "../components/portfolio/PortfolioActivityTable";
 import PortfolioPositionTable from "../components/portfolio/PortfolioPositionTable";
 import PortfolioSummary from "../components/portfolio/PortfolioSummary";
 import { useAuth } from "../context/AuthContext";
 import { usePortfolio } from "../hooks/usePositions";
+import { useMyTradeHistory } from "../hooks/useTradeHistory";
 import { useWallet } from "../hooks/useWallet";
 
-type PortfolioTab = "open" | "history";
+type PortfolioTab = "open" | "history" | "activity";
 
 export default function Portfolio() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [tab, setTab] = useState<PortfolioTab>("open");
   const { open, history, status, error, refresh } = usePortfolio(isAuthenticated);
+  const {
+    trades: activity,
+    status: activityStatus,
+    error: activityError,
+    refresh: refreshActivity,
+  } = useMyTradeHistory(isAuthenticated);
   const { wallet, status: walletStatus } = useWallet(isAuthenticated);
 
   if (!authLoading && !isAuthenticated) {
@@ -48,8 +56,11 @@ export default function Portfolio() {
         </div>
         <button
           type="button"
-          onClick={() => void refresh()}
-          disabled={status === "loading"}
+          onClick={() => {
+            void refresh();
+            void refreshActivity();
+          }}
+          disabled={status === "loading" || activityStatus === "loading"}
           className="rounded-btn border border-line bg-card px-4 py-2 text-sm text-ink hover:border-gold disabled:opacity-50"
         >
           Refresh
@@ -75,15 +86,22 @@ export default function Portfolio() {
         >
           Market history ({history.length})
         </button>
+        <button
+          type="button"
+          className={tabClass("activity")}
+          onClick={() => setTab("activity")}
+        >
+          Activity ({activity.length})
+        </button>
       </div>
 
-      {status === "loading" && (
+      {(status === "loading" || (tab === "activity" && activityStatus === "loading")) && (
         <p className="mt-8 text-sm text-muted" aria-live="polite">
           Loading portfolio…
         </p>
       )}
 
-      {status === "error" && (
+      {status === "error" && tab !== "activity" && (
         <div className="mt-8 rounded-card border border-line bg-card p-6">
           <p className="text-sm text-muted" role="alert">
             {error}
@@ -98,7 +116,22 @@ export default function Portfolio() {
         </div>
       )}
 
-      {status !== "loading" && status !== "error" && (
+      {tab === "activity" && activityStatus === "error" && (
+        <div className="mt-8 rounded-card border border-line bg-card p-6">
+          <p className="text-sm text-muted" role="alert">
+            {activityError}
+          </p>
+          <button
+            type="button"
+            onClick={() => void refreshActivity()}
+            className="mt-3 rounded-btn bg-deck px-4 py-2 text-sm font-medium text-card"
+          >
+            Try again
+          </button>
+        </div>
+      )}
+
+      {status !== "loading" && status !== "error" && tab !== "activity" && (
         <div className="mt-6">
           {tab === "open" ? (
             <PortfolioPositionTable
@@ -113,6 +146,15 @@ export default function Portfolio() {
               emptyMessage="No settled markets yet. Resolved markets you traded in will appear here."
             />
           )}
+        </div>
+      )}
+
+      {tab === "activity" && activityStatus !== "loading" && activityStatus !== "error" && (
+        <div className="mt-6">
+          <PortfolioActivityTable
+            trades={activity}
+            emptyMessage="No trades yet. Your buy orders will show up here."
+          />
         </div>
       )}
 
