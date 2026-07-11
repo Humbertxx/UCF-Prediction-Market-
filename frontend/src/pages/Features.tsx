@@ -7,6 +7,7 @@
 
 import { Link } from "react-router-dom";
 
+import MiniPriceChart from "../components/market/MiniPriceChart";
 import { useMarketBrief } from "../hooks/useMarketBrief";
 import { MarketBriefItem } from "../lib/api";
 import { CONFIDENCE_LABELS, TREND_LABELS } from "../lib/insightFormat";
@@ -48,6 +49,18 @@ function BriefCard({ item }: { item: MarketBriefItem }) {
           {item.market_title}
         </Link>
       </h2>
+
+      <div>
+        <MiniPriceChart
+          priceSeries={item.price_series}
+          currentYesPriceBps={item.yes_price_bps}
+        />
+        <p className="mt-1 text-right font-data text-xs tabular-nums text-muted">
+          {item.price_series.length > 0
+            ? `${item.price_series.length} trade${item.price_series.length === 1 ? "" : "s"}`
+            : "Awaiting first trade"}
+        </p>
+      </div>
 
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <span

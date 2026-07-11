@@ -207,6 +207,7 @@ export interface MarketBriefItem {
   category: string;
   market_status: string;
   yes_price_bps: number;
+  price_series: PricePoint[];
   generated_at: string;
   source: InsightSource;
   insight: MarketInsight;
