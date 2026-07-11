@@ -14,6 +14,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from backend.schemas.market import PricePoint
+
 InsightSource = Literal["gemini", "fallback", "cached"]
 
 
@@ -59,6 +61,8 @@ class MarketBriefItem(BaseModel):
     category: str
     market_status: str
     yes_price_bps: int
+    # Chronological YES-price snapshots (one per trade) for the card sparkline.
+    price_series: list[PricePoint]
     generated_at: datetime
     source: InsightSource
     insight: MarketInsight
