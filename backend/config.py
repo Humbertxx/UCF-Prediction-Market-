@@ -46,6 +46,18 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("ADMIN_EMAILS", "ADMIN_EMAIL"),
     )
 
+    # Google OAuth (GIS id_token verification on POST /auth/google).
+    google_client_id: str = Field(
+        default="",
+        validation_alias=AliasChoices("GOOGLE_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_ID"),
+    )
+    google_client_secret: str = Field(
+        default="",
+        validation_alias=AliasChoices(
+            "GOOGLE_CLIENT_SECRET", "GOOGLE_OAUTH_CLIENT_SECRET"
+        ),
+    )
+
     # Dev convenience: create tables + seed on startup when no Alembic run is used.
     auto_create_tables: bool = False
 

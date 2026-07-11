@@ -1,31 +1,31 @@
 /**
- * App shell.
- *
- * Purpose:
- * - Define client-side routes for the demo pages.
- *
- * Intended behavior:
- * - Keep routing thin; each page owns its own data fetching via hooks.
+ * App shell — routes for the demo pages.
  */
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
+import AppHeader from "./components/layout/AppHeader";
 import Admin from "./pages/Admin";
 import Home from "./pages/Home";
-import Leaderboard from "./pages/Leaderboard";
+import Login from "./pages/Login";
 import MarketPage from "./pages/MarketPage";
 import Markets from "./pages/Markets";
+import Portfolio from "./pages/Portfolio";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <div className="min-h-screen bg-surface">
+      <AppHeader />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/markets" element={<Markets />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/markets/:marketId" element={<MarketPage />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
-    </BrowserRouter>
+    </div>
   );
 }

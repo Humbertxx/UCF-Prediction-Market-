@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.config import get_settings
 from backend.database import Base, SessionLocal, engine
-from backend.routes import admin, auth, insights, markets, positions, trades
+from backend.routes import admin, auth, insights, markets, positions, trades, users
 from backend.services import market_service
 from backend.services.wallet_service import grant_wallets_for_all_users
 
@@ -48,6 +48,7 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     app.include_router(auth.router)
+    app.include_router(users.router)
     app.include_router(markets.router)
     app.include_router(trades.router)
     app.include_router(positions.router)

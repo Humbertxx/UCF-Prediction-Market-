@@ -1,8 +1,14 @@
 """Position API schemas."""
 
+from __future__ import annotations
+
 import uuid
+from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
+
+from backend.models.enums import MarketOutcome, MarketStatus
 
 
 class PositionOut(BaseModel):
@@ -11,6 +17,12 @@ class PositionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     market_id: uuid.UUID
+    market_title: str
+    market_slug: str
+    market_status: MarketStatus
+    yes_price_bps: int
+    resolution_outcome: Optional[MarketOutcome] = None
+    resolved_at: Optional[datetime] = None
     yes_shares: int
     no_shares: int
     cost_basis_credits: int

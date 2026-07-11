@@ -124,3 +124,5 @@ def test_positions_endpoint_after_trade(
     positions = response.json()
     assert len(positions) == 1
     assert positions[0]["yes_shares"] > 0
+    assert positions[0]["market_title"] == market.title
+    assert positions[0]["market_status"] == market.status.value

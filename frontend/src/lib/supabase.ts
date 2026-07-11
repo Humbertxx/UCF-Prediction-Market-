@@ -1,13 +1,10 @@
 /**
- * Supabase client module.
+ * Supabase browser client placeholder.
  *
- * Purpose:
- * - Initialize and export the Supabase browser client instance.
- * - Provide realtime subscription utilities and auth helpers.
- *
- * Intended behavior:
- * - Serve as the single integration point for Supabase features.
+ * Mode B auth uses ``POST /auth/demo`` + localStorage JWT (see ``lib/auth.ts``).
+ * Install ``@supabase/supabase-js`` when wiring realtime ``postgres_changes``.
  */
 
-export {};
-
+export function getSupabaseClient(): null {
+  return null;
+}

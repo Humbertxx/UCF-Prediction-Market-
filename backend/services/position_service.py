@@ -11,6 +11,7 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from backend.models.enums import MarketOutcome, MarketStatus
 from backend.models.market import Market
 from backend.models.position import Position
 from backend.models.wallet import Wallet
@@ -18,6 +19,18 @@ from backend.schemas.position import PositionOut
 from backend.services import amm
 
 BPS_DENOMINATOR = amm.BPS_DENOMINATOR
+
+
+def yes_price_bps_for_market(market: Market) -> int:
+    """Current or settlement YES price in basis points."""
+    if (
+        market.status == MarketStatus.resolved
+        and market.resolution_outcome is not None
+    ):
+        if market.resolution_outcome == MarketOutcome.yes:
+            return BPS_DENOMINATOR
+        return 0
+    return amm.get_yes_price_bps(market.pool_yes, market.pool_no)
 
 
 def market_value_credits(yes_shares: int, no_shares: int, yes_price_bps: int) -> int:
@@ -32,16 +45,27 @@ def market_value_credits(yes_shares: int, no_shares: int, yes_price_bps: int) ->
 
 
 def position_to_out(position: Position, market: Market) -> PositionOut:
-    yes_price_bps = amm.get_yes_price_bps(market.pool_yes, market.pool_no)
+    yes_price_bps = yes_price_bps_for_market(market)
     value = market_value_credits(position.yes_shares, position.no_shares, yes_price_bps)
+    pnl = (
+        position.realized_pnl
+        if market.status == MarketStatus.resolved and position.realized_pnl != 0
+        else value - position.cost_basis_credits
+    )
     return PositionOut(
         market_id=position.market_id,
+        market_title=market.title,
+        market_slug=market.slug,
+        market_status=market.status,
+        yes_price_bps=yes_price_bps,
+        resolution_outcome=market.resolution_outcome,
+        resolved_at=market.resolved_at,
         yes_shares=position.yes_shares,
         no_shares=position.no_shares,
         cost_basis_credits=position.cost_basis_credits,
         realized_pnl=position.realized_pnl,
         market_value_credits=value,
-        unrealized_pnl=value - position.cost_basis_credits,
+        unrealized_pnl=pnl,
     )
 
 

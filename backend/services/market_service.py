@@ -49,6 +49,17 @@ DEMO_MARKETS: tuple[DemoMarketSpec, ...] = (
     ),
 )
 
+# Demo category labels for portfolio P/L breakdown (keyed by market slug).
+CATEGORY_BY_SLUG: dict[str, str] = {
+    "ucf-football-historical-replay": "Sports",
+    "cop3502-exam1-mean-at-least-80": "Academics",
+    "ucf-fall-2026-enrollment-over-75000": "Campus",
+}
+
+
+def infer_market_category(slug: str) -> str:
+    return CATEGORY_BY_SLUG.get(slug, "General")
+
 
 def list_markets(db: Session) -> list[Market]:
     return list(db.execute(select(Market).order_by(Market.created_at)).scalars())

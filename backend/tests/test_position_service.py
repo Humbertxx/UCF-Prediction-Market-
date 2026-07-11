@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import Session
 
-from backend.models.enums import TradeSide
+from backend.models.enums import MarketOutcome, MarketStatus, TradeSide
 from backend.models.position import Position
 from backend.services import position_service, trade_service
 
@@ -48,3 +48,28 @@ def test_list_positions_returns_user_holdings(
     positions = position_service.list_positions(db, user.id)
     assert len(positions) == 1
     assert positions[0].market_id == market.id
+    assert positions[0].market_title == market.title
+    assert positions[0].market_slug == market.slug
+
+
+def test_resolved_market_uses_settlement_price(
+    db: Session, user, wallet, market
+) -> None:
+    trade_service.execute_trade(
+        db,
+        user_id=user.id,
+        market_id=market.id,
+        side=TradeSide.yes,
+        amount=1_000,
+    )
+
+    market.status = MarketStatus.resolved
+    market.resolution_outcome = MarketOutcome.yes
+    db.commit()
+
+    position = db.query(Position).filter_by(user_id=user.id, market_id=market.id).one()
+    out = position_service.position_to_out(position, market)
+
+    assert out.yes_price_bps == 10_000
+    assert out.market_status == MarketStatus.resolved
+    assert out.resolution_outcome == MarketOutcome.yes

@@ -24,8 +24,8 @@ from backend.config import get_settings
 from backend.database import get_db
 from backend.services import auth_service
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/demo", auto_error=False)
-optional_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/demo", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/google", auto_error=False)
+optional_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/google", auto_error=False)
 
 
 def credentials_error() -> HTTPException:
