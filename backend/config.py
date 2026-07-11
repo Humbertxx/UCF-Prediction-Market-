@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     # Database. Defaults to a local SQLite file so the app is runnable without a
     # provisioned Postgres; Supabase Postgres is supplied via DATABASE_URL in prod.
-    database_url: str = "sqlite+pysqlite:///./bloomknights.db"
+    database_url: str = "sqlite+pysqlite:///./ucf_prediction_market.db"
 
     # App JWT verification (tokens are issued by the reused StudySpot OAuth flow).
     jwt_secret: str = Field(
@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     @classmethod
     def default_database_url_when_blank(cls, value: object) -> object:
         if value is None or (isinstance(value, str) and not value.strip()):
-            return "sqlite+pysqlite:///./bloomknights.db"
+            return "sqlite+pysqlite:///./ucf_prediction_market.db"
         return value
 
     @field_validator("jwt_secret", mode="before")

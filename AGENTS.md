@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Cross-agent operating guide for Cursor, Claude Code, Codex, Gemini CLI, and similar assistants working on BloomKnights.
+Cross-agent operating guide for Cursor, Claude Code, Codex, Gemini CLI, and similar assistants working on the UCF Prediction Market project (BloomKnights competition entry).
 
 ## Read Order
 

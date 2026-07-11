@@ -1,6 +1,6 @@
 # 00-global.mdc
 
-Global coding expectations for the Bloomknights codebase.
+Global coding expectations for the UCF Prediction Market codebase (BloomKnights competition entry).
 
 - Demo reliability beats completeness.
 - Ask before adding dependencies.

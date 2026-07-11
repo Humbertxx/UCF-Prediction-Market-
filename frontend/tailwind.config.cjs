@@ -6,7 +6,7 @@
  * - Configure content scan paths for frontend source files.
  *
  * Intended behavior:
- * - Keep utility class generation aligned with Bloomknights design tokens.
+ * - Keep utility class generation aligned with UCF Prediction Market design tokens.
  *
  * Token values come from DESIGN.md section 13 — components must use these
  * classes instead of hardcoded hex values.

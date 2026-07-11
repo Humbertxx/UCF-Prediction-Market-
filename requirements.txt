@@ -1,4 +1,4 @@
-# BloomKnights backend — locked stack packages
+# UCF Prediction Market backend — locked stack packages
 #
 # Setup:
 #   python -m venv .venv

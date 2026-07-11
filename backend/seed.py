@@ -3,7 +3,7 @@
 Creates the three demo markets (idempotent by slug) and grants wallets to any
 user that does not already have one.
 
-Usage (from bloomknights/):
+Usage (from repo root):
     python -m backend.seed
 """
 

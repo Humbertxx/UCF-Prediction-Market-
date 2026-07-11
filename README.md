@@ -1,6 +1,6 @@
-# BloomKnights
+# UCF Prediction Market
 
-UCF-themed binary prediction-market simulation built with virtual credits. Users buy YES/NO shares in demo markets, prices move through a constant-product market maker (CPMM), and belief-driven bots simulate a crowd so judges can watch prices converge toward a hidden probability in real time.
+UCF-themed binary prediction-market simulation built with virtual credits for the **BloomKnights** competition. Users buy YES/NO shares in demo markets, prices move through a constant-product market maker (CPMM), and belief-driven bots simulate a crowd so judges can watch prices converge toward a hidden probability in real time.
 
 This is a simulation only. It uses virtual credits and is not gambling.
 
@@ -70,7 +70,7 @@ Admin-triggered bots trade from private beliefs sampled around a hardcoded `p_tr
 ## Project Structure
 
 ```text
-bloomknights/
+UCF-Prediction-Market/
 ├── README.md
 ├── AGENTS.md
 ├── CLAUDE.md
@@ -135,4 +135,4 @@ For AI-assisted development, start new coding sessions by reading:
 
 ## Disclaimer
 
-BloomKnights is a prediction-market simulation for demonstration and education. It uses virtual credits only.
+UCF Prediction Market is a prediction-market simulation for demonstration and education. It uses virtual credits only.

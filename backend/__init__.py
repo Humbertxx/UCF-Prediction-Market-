@@ -1,1 +1,1 @@
-"""BloomKnights backend package."""
+"""UCF Prediction Market backend package."""
