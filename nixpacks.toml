@@ -1,0 +1,7 @@
+# Nixpacks config for the Railway API service (Root Directory = repo root).
+# Pins the Python toolchain the same way the frontend pins Node 20 —
+# local dev runs 3.9, but the deploy target is 3.11 per README prerequisites.
+# Variables-only: build/install phases stay auto-detected by the Python provider.
+
+[variables]
+NIXPACKS_PYTHON_VERSION = "3.11"
