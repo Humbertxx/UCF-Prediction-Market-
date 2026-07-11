@@ -8,7 +8,7 @@ builder = "NIXPACKS"
 buildCommand = "npm ci && npm run build"
 
 [deploy]
-startCommand = "caddy run --config ./Caddyfile --adapter caddyfile"
+startCommand = "./caddy run --config ./Caddyfile --adapter caddyfile"
 healthcheckPath = "/"
 healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
