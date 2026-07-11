@@ -2,8 +2,14 @@
 
 AI feature guidance (insights, summaries, assistant outputs).
 
+- Build exactly one AI product feature: market insight over price/time data.
+- Use Gemini through `google-genai` only.
+- Do not install or use the legacy `google-generativeai` package.
+- Keep `GEMINI_API_KEY` server-side; never expose it through Vite.
+- Prefer structured JSON output with a schema.
 - Keep model prompts versioned and traceable.
 - Never trust model output without validation for user-visible claims.
 - Isolate AI inference in `backend/ai/insight_engine.py`.
 - Gate expensive generation behind explicit triggers.
 - Record enough context to debug prompt/response quality over time.
+- Send demo market data only; do not send sensitive user data.

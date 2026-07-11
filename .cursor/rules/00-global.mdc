@@ -1,0 +1,14 @@
+# 00-global.mdc
+
+Global coding expectations for the Bloomknights codebase.
+
+- Demo reliability beats completeness.
+- Ask before adding dependencies.
+- Keep secrets in `.env` only; never place real keys in docs, rules, prompts, frontend code, or skills.
+- Locked stack: React 18, TypeScript, Vite, Tailwind, FastAPI, SQLAlchemy, Alembic, Supabase, and Gemini via `google-genai`.
+- Do not add blockchain, wallet, Solana, or other on-chain packages or features.
+- Preserve clear file boundaries and avoid cross-layer leakage.
+- Prefer additive changes over broad refactors.
+- Keep public interfaces explicit with typed schemas, DTOs, and hook return types.
+- Document non-obvious business logic where prediction-market math appears.
+- Write tests for critical flows before optimization.

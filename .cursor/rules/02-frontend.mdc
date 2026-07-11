@@ -1,0 +1,15 @@
+# 02-frontend.mdc
+
+Frontend implementation constraints.
+
+- Use React 18, TypeScript, Vite, Tailwind CSS, Recharts, Axios, and `@supabase/supabase-js`.
+- Do not introduce React Native, Expo, Bootstrap, Chakra, or another styling framework.
+- Use Tailwind utilities and `DESIGN.md` tokens; avoid hardcoded hex values and one-off styling literals.
+- Keep data fetching and cache orchestration in `hooks/`.
+- Keep `components/` presentational where possible.
+- Route-level composition belongs in `pages/`.
+- Centralize API and Supabase clients in `src/lib/`.
+- Keep Supabase client setup in `src/lib/supabase.ts`.
+- Keep HTTP API setup in `src/lib/api.ts`.
+- Use Recharts for market charts.
+- Handle loading, empty, error, and disconnected realtime states on the demo path.

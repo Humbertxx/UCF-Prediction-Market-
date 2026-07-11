@@ -1,9 +1,0 @@
-# 02-frontend.mdc
-
-Frontend implementation constraints.
-
-- Keep data fetching and cache orchestration in `hooks/`.
-- Keep `components/` presentational where possible.
-- Route-level composition belongs in `pages/`.
-- Centralize API and Supabase clients in `src/lib/`.
-- Prefer design-token classes over one-off styling literals.

@@ -35,10 +35,6 @@ class Settings(BaseSettings):
     # Virtual credits granted to a wallet on creation.
     starting_wallet_credits: int = 10_000
 
-    # Gemini market insight (server-side only). Empty string means "not
-    # configured" and the insight engine serves its fallback response.
-    gemini_api_key: str = ""
-
     # Dev convenience: create tables + seed on startup when no Alembic run is used.
     auto_create_tables: bool = False
 

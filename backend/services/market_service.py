@@ -63,7 +63,7 @@ def get_market_by_slug(db: Session, slug: str) -> Market | None:
 
 
 def get_price_history(db: Session, market_id) -> list[Trade]:
-    """Ordered post-trade price snapshots that back the chart and AI insight."""
+    """Ordered post-trade price snapshots that back the market chart."""
     return list(
         db.execute(
             select(Trade).where(Trade.market_id == market_id).order_by(Trade.id)

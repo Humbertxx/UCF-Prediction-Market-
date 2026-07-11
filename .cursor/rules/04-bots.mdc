@@ -2,6 +2,10 @@
 
 Bot-system guidance.
 
+- Bots are admin-triggered only; never start bot loops implicitly on import or app startup.
+- Each market uses a hardcoded hidden `p_true` for deterministic demo convergence.
+- Bot strategy samples a private belief around `p_true`, compares it to CPMM price, and buys YES or NO by conviction.
+- Keep live cadence controlled, roughly every 1-3 seconds.
 - Keep bot behavior deterministic when running scripted sequences.
 - Separate strategy logic from orchestration/runtime concerns.
 - Log bot decisions with enough metadata for post-trade analysis.

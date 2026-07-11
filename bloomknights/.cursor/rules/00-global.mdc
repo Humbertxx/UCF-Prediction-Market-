@@ -1,9 +1,0 @@
-# 00-global.mdc
-
-Global coding expectations for the Bloomknights codebase.
-
-- Preserve clear file boundaries and avoid cross-layer leakage.
-- Prefer additive changes over broad refactors in early iterations.
-- Keep public interfaces explicit (typed schemas, DTOs, hook return types).
-- Document non-obvious business logic where prediction-market math appears.
-- Write tests for critical flows before optimization.

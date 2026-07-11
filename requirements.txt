@@ -6,7 +6,7 @@
 #   pip install -r requirements.txt
 #
 # Verified (Python 3.12): fastapi 0.139, uvicorn 0.51, SQLAlchemy 2.0.51,
-# alembic 1.18, google-genai 1.75, supabase 2.31, pytest 8.4
+# alembic 1.18, supabase 2.31, pytest 8.4
 
 # API
 fastapi>=0.115.0,<1.0.0
@@ -31,9 +31,6 @@ authlib>=1.3.2,<2.0.0
 
 # Supabase (Postgres client helpers / service role)
 supabase>=2.10.0,<3.0.0
-
-# Gemini insight engine (use google-genai only — not google-generativeai)
-google-genai>=1.0.0,<2.0.0
 
 # Tests (phase-gate AMM / trade checks)
 pytest>=8.3.0,<9.0.0

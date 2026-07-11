@@ -2,7 +2,7 @@
 
 An immutable record of a single executed buy against a market. Doubles as the
 price-history source: every row snapshots the resulting YES price and pool
-state, so charts and the Gemini insight read from ``trades`` directly.
+state, so charts (and later market insight) read from ``trades`` directly.
 
 Bots trade with ``user_id`` NULL (``is_bot`` True) and only move the pools; they
 get no wallet or position row.
