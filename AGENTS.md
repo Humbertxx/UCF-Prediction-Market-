@@ -7,8 +7,9 @@ Cross-agent operating guide for Cursor, Claude Code, Codex, Gemini CLI, and simi
 1. `AGENTS.md` for build order, locked decisions, and guardrails.
 2. `.cursor/rules/*.mdc` for scoped coding rules.
 3. `DESIGN.md` for frontend tokens, motion, and visual style.
-4. `CLAUDE.md` for Claude Code session bootstrap.
-5. `README.md` for the public project overview only.
+4. `MOTION.md` for Framer Motion choreography on the landing route (pairs with `DESIGN.md` §16).
+5. `CLAUDE.md` for Claude Code session bootstrap.
+6. `README.md` for the public project overview only.
 
 ## Prime Directives
 

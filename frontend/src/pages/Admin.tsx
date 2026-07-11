@@ -20,6 +20,7 @@ import {
   formatPriceFromBps,
   isMarketTradeable,
 } from "../lib/marketFormat";
+import { OUTCOME } from "../lib/terminology";
 import type { MarketSummary } from "../types/market";
 
 type BusyAction =
@@ -169,7 +170,7 @@ export default function Admin() {
           return;
         }
         setActionMessage(
-          `Burst (${mode}): ${result.data.trades_executed} trade(s) · YES now ${formatPriceFromBps(result.data.yes_price_bps)}`,
+          `Burst (${mode}): ${result.data.trades_executed} trade(s) · ${OUTCOME.yes.label} now ${formatPriceFromBps(result.data.yes_price_bps)}`,
         );
         void refresh();
         void refreshSimStatuses(markets);
@@ -277,7 +278,7 @@ export default function Admin() {
                               {market.title}
                             </p>
                             <p className="mt-1 font-data text-sm tabular-nums text-muted">
-                              YES {formatPriceFromBps(market.yes_price_bps)} ·{" "}
+                              {OUTCOME.yes.label} {formatPriceFromBps(market.yes_price_bps)} ·{" "}
                               {formatMarketStatus(market.status)}
                               {running && (
                                 <>
@@ -383,7 +384,7 @@ export default function Admin() {
                       >
                         {isBusy(market.id, "resolve-yes")
                           ? "Resolving…"
-                          : "Resolve YES"}
+                          : `Resolve ${OUTCOME.yes.resolved}`}
                       </button>
                       <button
                         type="button"
@@ -393,7 +394,7 @@ export default function Admin() {
                       >
                         {isBusy(market.id, "resolve-no")
                           ? "Resolving…"
-                          : "Resolve NO"}
+                          : `Resolve ${OUTCOME.no.resolved}`}
                       </button>
                     </div>
                   </li>

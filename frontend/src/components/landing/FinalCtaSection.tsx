@@ -2,20 +2,28 @@
  * Final CTA band before the global footer.
  */
 
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import { useAuth } from "../../context/AuthContext";
+import { MotionLink } from "../../motion/components/MotionButton";
+import MotionReveal from "../../motion/components/MotionReveal";
+import { useMotionSafe } from "../../motion/hooks/useMotionSafe";
+import { scalePop } from "../../motion/variants";
 
 export default function FinalCtaSection() {
   const { isAuthenticated, user } = useAuth();
+  const motionSafe = useMotionSafe();
 
   return (
-    <section
+    <MotionReveal
       className="bg-surface py-16 sm:py-20"
       aria-labelledby="final-cta-heading"
     >
       <div className="mx-auto max-w-6xl px-4">
-        <div className="rounded-card border border-line bg-card px-6 py-10 text-center sm:px-12">
+        <motion.div
+          variants={motionSafe.variants(scalePop)}
+          className="rounded-card border border-line bg-card px-6 py-10 text-center sm:px-12"
+        >
           <h2
             id="final-cta-heading"
             className="font-display text-2xl font-semibold text-ink sm:text-3xl"
@@ -30,33 +38,35 @@ export default function FinalCtaSection() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             {isAuthenticated ? (
               <>
-                <Link
+                <MotionLink
                   to="/markets"
                   className="rounded-btn bg-deck px-6 py-3 font-display font-medium text-card"
                 >
                   Go to markets
-                </Link>
-                <Link
+                </MotionLink>
+                <MotionLink
                   to="/portfolio"
                   className="rounded-btn border border-line px-6 py-3 font-display font-medium text-ink"
+                  spring={false}
                 >
                   Open portfolio
-                </Link>
+                </MotionLink>
               </>
             ) : (
               <>
-                <Link
+                <MotionLink
                   to="/login"
                   className="rounded-btn bg-deck px-6 py-3 font-display font-medium text-card"
                 >
                   Log in
-                </Link>
-                <Link
+                </MotionLink>
+                <MotionLink
                   to="/markets"
                   className="rounded-btn border border-line px-6 py-3 font-display font-medium text-ink"
+                  spring={false}
                 >
                   Browse first
-                </Link>
+                </MotionLink>
               </>
             )}
           </div>
@@ -67,8 +77,8 @@ export default function FinalCtaSection() {
               {user.is_admin ? " · admin" : ""}
             </p>
           )}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </MotionReveal>
   );
 }

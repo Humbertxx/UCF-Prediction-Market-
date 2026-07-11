@@ -2,7 +2,10 @@
  * Trade feed — recent trades for one market.
  */
 
+import { useEffect, useRef } from "react";
+
 import { formatPriceFromBps } from "../../lib/marketFormat";
+import { formatTradeSideAction } from "../../lib/terminology";
 import type { TradeHistoryItem } from "../../types/market";
 
 interface TradeFeedProps {
@@ -26,6 +29,12 @@ export default function TradeFeed({
   error = null,
   realtimeConnected = false,
 }: TradeFeedProps) {
+  const prevIdsRef = useRef<Set<number> | null>(null);
+
+  useEffect(() => {
+    prevIdsRef.current = new Set(trades.map((trade) => trade.id));
+  }, [trades]);
+
   return (
     <section className="rounded-card border border-line bg-card p-4 md:p-6">
       <div className="flex items-center justify-between gap-2">
@@ -57,27 +66,36 @@ export default function TradeFeed({
 
       {trades.length > 0 && (
         <ul className="mt-3 divide-y divide-line">
-          {trades.map((trade) => (
-            <li
-              key={trade.id}
-              className="flex items-center justify-between gap-3 py-2 text-sm"
-            >
-              <div className="min-w-0">
-                <p className="font-data tabular-nums text-ink">
-                  <span className={trade.side === "yes" ? "text-yes" : "text-no"}>
-                    {trade.is_bot
-                      ? trade.bot_label ?? "Bot"
-                      : "Trader"}
-                  </span>{" "}
-                  bought {trade.shares} {trade.side.toUpperCase()} @{" "}
-                  {formatPriceFromBps(trade.yes_price_bps)}
-                </p>
-                <p className="text-xs text-muted">
-                  {trade.cost_credits} credits · {formatTime(trade.created_at)}
-                </p>
-              </div>
-            </li>
-          ))}
+          {trades.map((trade) => {
+            const isNew =
+              prevIdsRef.current !== null &&
+              !prevIdsRef.current.has(trade.id);
+
+            return (
+              <li
+                key={trade.id}
+                className={[
+                  "flex items-center justify-between gap-3 py-2 text-sm",
+                  isNew ? "trade-row-enter trade-row-fade-in" : "",
+                ].join(" ")}
+              >
+                <div className="min-w-0">
+                  <p className="font-data tabular-nums text-ink">
+                    <span className={trade.side === "yes" ? "text-yes" : "text-no"}>
+                      {trade.is_bot
+                        ? trade.bot_label ?? "Bot"
+                        : "Trader"}
+                    </span>{" "}
+                    {formatTradeSideAction(trade.side, trade.shares)} @{" "}
+                    {formatPriceFromBps(trade.yes_price_bps)}
+                  </p>
+                  <p className="text-xs text-muted">
+                    {trade.cost_credits} credits · {formatTime(trade.created_at)}
+                  </p>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

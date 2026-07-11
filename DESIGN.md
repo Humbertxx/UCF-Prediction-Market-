@@ -11,7 +11,7 @@ If this file and a prompt conflict, this file wins unless the user explicitly ov
 3. One visual hero per page type: marketing home uses the landing hero band; market/trading pages use the live probability bar.
 4. Keep UI calm and data-forward. Numbers are the primary content.
 5. Use monospace with tabular numbers for price, odds, credits, shares, and PnL.
-6. Preserve clear YES (green) and NO (red) semantics.
+6. Preserve clear Lock (green) and Doubt (red) semantics — display labels for yes/no sides.
 7. Gold is an accent, not a background theme color.
 8. Include loading, empty, error, and disconnected states for user-facing surfaces.
 9. Respect `prefers-reduced-motion` and maintain keyboard-visible focus.
@@ -48,8 +48,8 @@ Design metaphor: campus exchange floor.
 | `--card` | `#FFFFFF` | Cards and panels |
 | `--gold` | `#FFC904` | Accent marker, flash, focus edge |
 | `--gold-ink` | `#8A6B00` | Gold-toned text on light backgrounds |
-| `--yes` | `#12805C` | YES state, positive move |
-| `--no` | `#C6432E` | NO state, negative move |
+| `--yes` | `#12805C` | Lock side (yes), positive move |
+| `--no` | `#C6432E` | Doubt side (no), negative move |
 | `--muted` | `#6B7280` | Secondary labels and helper text |
 | `--line` | `#E2E5EA` | Borders, separators, chart grid lines |
 | `--deck` | `#1B1E26` | Header/admin bands and dark chrome |
@@ -106,8 +106,8 @@ This is the highest-priority visual component.
 
 Required behavior:
 
-- Horizontal YES/NO split bar under market title.
-- YES fill width reflects `P(YES)`.
+- Horizontal Lock/Doubt split bar under market title.
+- Lock fill width reflects `P(YES)` (internal yes price).
 - Thin gold marker indicates current price.
 - On price update:
   - marker eases to new position (`400ms`, `cubic-bezier(.2,.8,.2,1)`)
@@ -127,8 +127,8 @@ Constraint:
 
 ### Trade Panel
 
-- Primary controls: amount input, Buy YES button, Buy NO button.
-- Buttons must be explicit verbs (`Buy YES`, `Buy NO`).
+- Primary controls: amount input, Lock In button, Doubt It button.
+- Buttons must use display labels (`Lock In`, `Doubt It`).
 - Show post-trade feedback clearly (shares bought, effective price).
 
 ### Price Chart
@@ -192,10 +192,12 @@ For `prefers-reduced-motion: reduce`:
 
 Preferred examples:
 
-- `Buy YES`
-- `Buy NO`
+- `Lock In`
+- `Doubt It`
 - `Simulate`
-- `Bought 42 YES @ 0.61`
+- `Locked 42 Lock @ 0.61`
+
+User-facing outcome names live in `frontend/src/lib/terminology.ts` (`Lock` = yes, `Doubt` = no). API and DB keep `yes`/`no`.
 
 Footer legal line:
 
@@ -303,3 +305,44 @@ If an AI must choose between options:
 6. On the landing page, choose clear section rhythm over a single dense block.
 
 If still ambiguous, ask the user before introducing new visual patterns.
+
+## 16) Motion System (Framer Motion)
+
+Visual tokens and trading-surface motion stay in sections 4–10 above. Full choreography
+(variants, springs, orchestration maps) lives in **`MOTION.md`** at the repo root.
+
+### Split by surface
+
+| Surface | Motion stack | Notes |
+| --- | --- | --- |
+| Landing (`/`) | Framer Motion via `frontend/src/motion/` | Lazy-loaded with the Home route |
+| Trading (`/markets`, `/markets/:id`, portfolio, admin) | CSS transitions only | Probability bar, card hover, trade rows |
+
+### Implementation map
+
+```
+frontend/src/motion/          # tokens, variants, landing-only components
+frontend/src/components/ui/   # CSS skeleton loaders (trading routes)
+```
+
+### Landing patterns (Framer Motion)
+
+- Hero waterfall entrance (eyebrow → headline → subline → CTAs → phase dots)
+- `whileInView` stagger on marketing sections
+- Spring CTA links (`MotionLink`)
+- Shimmer skeletons in markets preview while API loads
+
+### Trading patterns (CSS — do not import Framer here)
+
+- Probability marker/bar easing — 400ms (`ProbabilityBar`)
+- Gold flash on price update — 220ms
+- Card hover — 2px lift + shadow — 150ms (`MarketCard`)
+- New trade row — fade + gold highlight — 600ms (`TradeFeed`, `.trade-row-enter`)
+
+### Rules
+
+1. **`DESIGN.md` wins** on colors, typography, and readability; `MOTION.md` wins on timing/easing.
+2. Never hardcode Aave purple tokens from `MOTION.md` §1.1 — use `--gold`, `--deck`, etc.
+3. Wrap landing trees in `<MotionConfig reducedMotion="user">` (see `pages/Home.tsx`).
+4. Defer `scalePop` modals until confirmation dialogs exist.
+5. Prefer CSS over Framer on any route where live prices are the hero.

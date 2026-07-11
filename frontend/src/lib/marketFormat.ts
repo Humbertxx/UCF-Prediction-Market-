@@ -36,16 +36,18 @@ export function pnlColorClass(value: number): string {
   return "text-muted";
 }
 
-/** Human-readable position side label, e.g. "YES · 12" or "NO · 5". */
+import { OUTCOME } from "./terminology";
+
+/** Human-readable position side label, e.g. "Lock · 12" or "Doubt · 5". */
 export function formatPositionSide(
   yesShares: number,
   noShares: number,
 ): string {
   if (yesShares > 0 && noShares > 0) {
-    return `YES · ${yesShares.toLocaleString()} · NO · ${noShares.toLocaleString()}`;
+    return `${OUTCOME.yes.label} · ${yesShares.toLocaleString()} · ${OUTCOME.no.label} · ${noShares.toLocaleString()}`;
   }
-  if (yesShares > 0) return `YES · ${yesShares.toLocaleString()}`;
-  if (noShares > 0) return `NO · ${noShares.toLocaleString()}`;
+  if (yesShares > 0) return `${OUTCOME.yes.label} · ${yesShares.toLocaleString()}`;
+  if (noShares > 0) return `${OUTCOME.no.label} · ${noShares.toLocaleString()}`;
   return "—";
 }
 

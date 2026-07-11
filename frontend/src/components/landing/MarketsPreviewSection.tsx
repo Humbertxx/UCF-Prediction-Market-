@@ -6,13 +6,15 @@ import { Link } from "react-router-dom";
 
 import MarketCard from "../market/MarketCard";
 import { useMarkets } from "../../hooks/useMarket";
+import { MarketCardSkeleton } from "../../motion/components/Skeleton";
+import MotionReveal, { MotionRevealItem } from "../../motion/components/MotionReveal";
 
 export default function MarketsPreviewSection() {
   const { markets, status } = useMarkets();
   const preview = markets.slice(0, 3);
 
   return (
-    <section
+    <MotionReveal
       className="border-b border-line bg-card py-16 sm:py-20"
       aria-labelledby="markets-preview-heading"
     >
@@ -42,9 +44,11 @@ export default function MarketsPreviewSection() {
         </div>
 
         {status === "loading" && preview.length === 0 && (
-          <p className="mt-10 text-sm text-muted" role="status">
-            Loading markets…
-          </p>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="status">
+            <MarketCardSkeleton />
+            <MarketCardSkeleton />
+            <MarketCardSkeleton />
+          </div>
         )}
 
         {status === "success" && preview.length === 0 && (
@@ -54,13 +58,19 @@ export default function MarketsPreviewSection() {
         )}
 
         {preview.length > 0 && (
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <MotionReveal
+            as="div"
+            stagger
+            className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {preview.map((market) => (
-              <MarketCard key={market.id} market={market} />
+              <MotionRevealItem key={market.id}>
+                <MarketCard market={market} />
+              </MotionRevealItem>
             ))}
-          </div>
+          </MotionReveal>
         )}
       </div>
-    </section>
+    </MotionReveal>
   );
 }

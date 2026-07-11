@@ -3,8 +3,8 @@
  * background image from `public/landing/` and 3s rotating headline lines.
  */
 
+import { motion } from "framer-motion";
 import { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
 import { useRotatingPhrase } from "../../hooks/useRotatingPhrase";
@@ -14,6 +14,22 @@ import {
   HERO_STATIC_SUBLINE,
   LANDING_HERO_BACKGROUNDS,
 } from "../../lib/landing";
+import { MotionLink } from "../../motion/components/MotionButton";
+import { useMotionSafe } from "../../motion/hooks/useMotionSafe";
+import { fadeUp } from "../../motion/variants";
+
+const heroItem = (delay: number) => ({
+  hidden: fadeUp.hidden,
+  visible: {
+    ...fadeUp.visible,
+    transition: {
+      ...(typeof fadeUp.visible === "object" && "transition" in fadeUp.visible
+        ? fadeUp.visible.transition
+        : {}),
+      delay,
+    },
+  },
+});
 
 export default function HeroSection() {
   const { isAuthenticated } = useAuth();
@@ -21,6 +37,7 @@ export default function HeroSection() {
     HERO_ROTATING_LINES,
     3000,
   );
+  const motionSafe = useMotionSafe();
 
   const [bgIndex, setBgIndex] = useState(0);
   const [bgLoaded, setBgLoaded] = useState(false);
@@ -46,7 +63,6 @@ export default function HeroSection() {
       className="relative isolate min-h-[min(88vh,52rem)] overflow-hidden bg-deck text-card"
       aria-labelledby="hero-heading"
     >
-      {/* Background image (user uploads to public/landing/) */}
       <img
         key={bgSrc}
         src={bgSrc}
@@ -60,7 +76,6 @@ export default function HeroSection() {
         onError={onBgError}
       />
 
-      {/* Fallback gradient when no image is uploaded */}
       <div
         className="absolute inset-0 bg-gradient-to-br from-deck via-[#252a35] to-deck"
         aria-hidden
@@ -69,17 +84,37 @@ export default function HeroSection() {
         className="absolute inset-0 bg-gradient-to-t from-deck via-deck/75 to-deck/40"
         aria-hidden
       />
-      <div
-        className="pointer-events-none absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-gold/10 blur-3xl"
+
+      <motion.div
+        className="pointer-events-none absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-gold/15 blur-3xl"
         aria-hidden
+        animate={
+          motionReduced
+            ? undefined
+            : {
+                opacity: [0.25, 0.45, 0.25],
+                scale: [1, 1.06, 1],
+              }
+        }
+        transition={{ duration: 4, ease: "linear", repeat: Infinity }}
       />
 
-      <div className="relative mx-auto flex min-h-[min(88vh,52rem)] max-w-6xl flex-col justify-center px-4 py-20 sm:py-24">
-        <p className="font-display text-sm font-medium uppercase tracking-[0.18em] text-gold">
+      <motion.div
+        className="relative mx-auto flex min-h-[min(88vh,52rem)] max-w-6xl flex-col justify-center px-4 py-20 sm:py-24"
+        initial={motionSafe.initial}
+        animate="visible"
+      >
+        <motion.p
+          variants={motionSafe.variants(heroItem(0))}
+          className="font-display text-sm font-medium uppercase tracking-[0.18em] text-gold"
+        >
           {HERO_EYEBROW}
-        </p>
+        </motion.p>
 
-        <div className="mt-6 min-h-[4.5rem] sm:min-h-[5.5rem] lg:min-h-[6.5rem]">
+        <motion.div
+          variants={motionSafe.variants(heroItem(0.15))}
+          className="mt-6 min-h-[4.5rem] sm:min-h-[5.5rem] lg:min-h-[6.5rem]"
+        >
           <h1
             id="hero-heading"
             className={[
@@ -90,44 +125,52 @@ export default function HeroSection() {
           >
             {phrase}
           </h1>
-        </div>
+        </motion.div>
 
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-card/85">
+        <motion.p
+          variants={motionSafe.variants(heroItem(0.3))}
+          className="mt-5 max-w-2xl text-lg leading-relaxed text-card/85"
+        >
           {HERO_STATIC_SUBLINE}
-        </p>
+        </motion.p>
 
-        <div className="mt-8 flex flex-wrap gap-3">
+        <motion.div
+          variants={motionSafe.variants(heroItem(0.45))}
+          className="mt-8 flex flex-wrap gap-3"
+        >
           {isAuthenticated ? (
-            <Link
+            <MotionLink
               to="/markets"
               className="rounded-btn bg-gold px-6 py-3 font-display font-semibold text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
             >
               Open markets
-            </Link>
+            </MotionLink>
           ) : (
-            <Link
+            <MotionLink
               to="/login"
               className="rounded-btn bg-gold px-6 py-3 font-display font-semibold text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
             >
               Log in to trade
-            </Link>
+            </MotionLink>
           )}
-          <Link
+          <MotionLink
             to="/markets"
             className="rounded-btn border border-card/35 bg-card/10 px-6 py-3 font-display font-medium text-card backdrop-blur-sm hover:bg-card/15"
+            spring={false}
           >
             Browse markets
-          </Link>
-          <Link
+          </MotionLink>
+          <MotionLink
             to="/features"
             className="rounded-btn border border-card/20 px-6 py-3 font-display font-medium text-card/90 hover:border-gold/50"
+            spring={false}
           >
             AI Market Brief
-          </Link>
-        </div>
+          </MotionLink>
+        </motion.div>
 
-        {/* Phase indicators — one dot per rotating line */}
-        <div
+        <motion.div
+          variants={motionSafe.variants(heroItem(0.6))}
           className="mt-10 flex items-center gap-2"
           role="tablist"
           aria-label="Hero message phases"
@@ -149,12 +192,12 @@ export default function HeroSection() {
               Motion reduced — headline paused
             </span>
           )}
-        </div>
+        </motion.div>
 
         <p className="sr-only">
           {count} rotating messages, {motionReduced ? "static display" : "3 second"} cycle
         </p>
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -12,6 +12,7 @@ import {
   formatPriceFromBps,
   pnlColorClass,
 } from "../../lib/marketFormat";
+import { outcomeResolvedLabel } from "../../lib/terminology";
 import type { Position } from "../../types/market";
 
 type PortfolioTableVariant = "open" | "history";
@@ -43,7 +44,7 @@ function OutcomeBadge({ position }: { position: Position }) {
         isYes ? "bg-yes/10 text-yes" : "bg-no/10 text-no",
       ].join(" ")}
     >
-      Resolved {isYes ? "YES" : "NO"}
+      Resolved {outcomeResolvedLabel(isYes)}
     </span>
   );
 }

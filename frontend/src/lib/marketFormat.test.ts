@@ -67,8 +67,8 @@ describe("pnl and credits helpers", () => {
   });
 
   it("formats position sides", () => {
-    expect(formatPositionSide(12, 0)).toBe("YES · 12");
-    expect(formatPositionSide(0, 5)).toBe("NO · 5");
+    expect(formatPositionSide(12, 0)).toBe("Lock · 12");
+    expect(formatPositionSide(0, 5)).toBe("Doubt · 5");
     expect(formatPositionSide(0, 0)).toBe("—");
   });
 

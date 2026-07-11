@@ -3,6 +3,7 @@
  */
 
 import MarketCard from "../components/market/MarketCard";
+import { MarketCardSkeleton } from "../components/ui/Skeleton";
 import { useMarkets } from "../hooks/useMarket";
 
 export default function Markets() {
@@ -19,7 +20,7 @@ export default function Markets() {
             Browse markets
           </h1>
           <p className="mt-2 max-w-2xl text-base text-muted">
-            Virtual-credit YES/NO markets. Open a market to trade and watch
+            Virtual-credit Lock/Doubt markets. Open a market to trade and watch
             prices move.
           </p>
         </div>
@@ -34,9 +35,11 @@ export default function Markets() {
       </div>
 
       {status === "loading" && markets.length === 0 && (
-        <p className="mt-10 text-sm text-muted" role="status">
-          Loading markets…
-        </p>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="status">
+          <MarketCardSkeleton />
+          <MarketCardSkeleton />
+          <MarketCardSkeleton />
+        </div>
       )}
 
       {status === "error" && (

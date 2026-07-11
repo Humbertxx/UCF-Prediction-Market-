@@ -15,6 +15,7 @@ import {
 } from "recharts";
 
 import { formatPriceFromBps } from "../../lib/marketFormat";
+import { OUTCOME } from "../../lib/terminology";
 import {
   latestYesPriceBps,
   toChartRows,
@@ -40,7 +41,7 @@ function ChartTooltip({
   return (
     <div className="rounded-btn border border-line bg-card px-3 py-2 shadow-sm">
       <p className="font-data text-sm tabular-nums text-ink">
-        YES {formatPriceFromBps(row.yes_price_bps)}
+        {OUTCOME.yes.label} {formatPriceFromBps(row.yes_price_bps)}
       </p>
       <p className="mt-0.5 text-xs text-muted">{row.timeLabel}</p>
     </div>
@@ -63,7 +64,7 @@ export default function PriceChart({
         </h2>
         {data.length > 0 && (
           <p className="font-data text-sm tabular-nums text-muted">
-            {data.length} trade{data.length === 1 ? "" : "s"} · YES{" "}
+            {data.length} trade{data.length === 1 ? "" : "s"} · {OUTCOME.yes.label}{" "}
             <span className="text-ink">{formatPriceFromBps(latestBps)}</span>
           </p>
         )}
@@ -81,7 +82,7 @@ export default function PriceChart({
         <div
           className="mt-4 h-56 w-full"
           role="img"
-          aria-label="YES price over time"
+          aria-label={`${OUTCOME.yes.label} price over time`}
         >
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -113,7 +114,7 @@ export default function PriceChart({
               <Line
                 type="monotone"
                 dataKey="yesPrice"
-                name="YES"
+                name={OUTCOME.yes.label}
                 stroke="var(--color-yes)"
                 strokeWidth={2}
                 dot={data.length < 40}

@@ -1,11 +1,18 @@
-# Signature Motion Kit — Fintech App (Aave-Inspired)
-> Stack: React + Framer Motion | Theme: Dark Navy/Purple | Scope: Full System
+# Knightshi Motion Kit
+> Stack: React + Framer Motion (landing route only) | Visual tokens: **DESIGN.md** | Scope: Motion choreography
+
+**Companion doc:** `DESIGN.md` is the visual source of truth (UCF black/gold, light trading UI).
+This file defines **how things move**. Do not import purple/Aave color values from §1.1 into
+components — map glows and accents to `--gold` and `--deck` instead.
 
 ---
 
 ## 0. CONTEXT & PHILOSOPHY
 
-This motion kit governs **every** animated state in the app. The design philosophy follows four rules:
+This motion kit governs animated state on **marketing/landing surfaces** (`/`). Trading routes
+use CSS motion only (see `DESIGN.md` §10 and §16).
+
+The design philosophy follows four rules:
 
 1. **Motion is state** — animate transitions between UI states, not decoration.
 2. **Budget motion** — high-frequency interactions (hover, button tap) stay under 150ms. Low-frequency moments (page entrance, modals, onboarding) may use up to 600ms.
@@ -17,6 +24,10 @@ This motion kit governs **every** animated state in the app. The design philosop
 ## 1. DESIGN TOKENS
 
 ### 1.1 Color Palette
+
+> **Knightshi:** Use `DESIGN.md` §4 tokens in components. The palette below is the original
+> Aave-inspired reference — keep for radial-glow math only; substitute `rgba(255,201,4,…)` for
+> brand purple and `#1B1E26` (`--deck`) for dark surfaces.
 
 ```ts
 // tokens/colors.ts
@@ -797,40 +808,21 @@ const shouldReduce = useReducedMotion()
 ## 9. FILE STRUCTURE
 
 ```
-src/
-├── tokens/
-│   ├── colors.ts           # Color palette
-│   ├── motion.ts           # Duration tokens
-│   ├── easing.ts           # Cubic-bezier values
-│   └── springs.ts          # Spring presets
-│
-├── variants/
-│   ├── fadeUp.ts
-│   ├── staggerContainer.ts
-│   ├── slideInRight.ts
-│   ├── scalePop.ts
-│   ├── fadeThrough.ts
-│   └── index.ts            # Barrel export
-│
-├── hooks/
-│   ├── useMotionSafe.ts    # prefers-reduced-motion
-│   └── useMouseGlow.ts     # cursor-tracking glow
-│
+frontend/src/motion/              # Implemented — landing route only
+├── tokens.ts
+├── variants.ts
+├── hooks/useMotionSafe.ts
 ├── components/
-│   ├── Button.tsx
-│   ├── MarketCard.tsx
-│   ├── GlassCard.tsx
-│   ├── AnimatedCounter.tsx
-│   ├── Modal.tsx
-│   ├── Toast.tsx
-│   ├── Skeleton.tsx
-│   ├── PageTransition.tsx
-│   ├── ScrollProgressBar.tsx
-│   ├── Navbar.tsx
-│   └── ParallaxOrb.tsx
-│
-└── pages/
-    └── (each page wrapped in <PageTransition>, sections use whileInView)
+│   ├── MotionReveal.tsx
+│   ├── MotionButton.tsx
+│   ├── Skeleton.tsx              # Framer shimmer (landing preview)
+│   └── PageTransition.tsx        # Optional; not used on trading routes
+└── index.ts
+
+frontend/src/components/ui/
+└── Skeleton.tsx                  # CSS shimmer (trading routes)
+
+frontend/src/pages/Home.tsx       # MotionConfig + lazy route entry
 ```
 
 ---
@@ -838,31 +830,28 @@ src/
 ## 10. INSTALL & SETUP
 
 ```bash
-# Required
+# Required (already in frontend/package.json)
 npm install framer-motion
-
-# Optional — Motion's AnimateNumber (2.5kb, best for live ticker counters)
-npm install motion
-
-# Version requirement
-# framer-motion >= 11.x for useScroll, AnimatePresence mode="wait", useSpring
 ```
 
-```tsx
-// App.tsx — global config
-import { MotionConfig } from 'framer-motion'
+**Bundle strategy:** Home is `React.lazy()`-loaded in `App.tsx` so Framer Motion ships in the
+landing chunk, not the trading-route critical path. Trading surfaces use CSS from `DESIGN.md` §10.
 
-export default function App() {
+```tsx
+// pages/Home.tsx — MotionConfig only on landing
+import { MotionConfig } from "framer-motion";
+
+export default function Home() {
   return (
     <MotionConfig reducedMotion="user">
-      <PageTransition>
-        <RouterOutlet />
-      </PageTransition>
+      {/* landing sections with whileInView / orchestration */}
     </MotionConfig>
-  )
+  );
 }
 ```
 
+`scalePop` modals: wire when admin/trade confirmation dialogs are added.
+
 ---
 
-*End of Motion Kit — Feed this entire file to your AI coding assistant as the authoritative motion spec.*
+*End of Motion Kit — pair with `DESIGN.md` for Knightshi visuals. Feed both files to AI agents.*

@@ -8,8 +8,8 @@ export const TREND_LABELS: Record<
   InsightTrend,
   { label: string; className: string }
 > = {
-  bullish_yes: { label: "YES trending up", className: "text-yes" },
-  bearish_yes: { label: "YES trending down", className: "text-no" },
+  bullish_yes: { label: "Lock trending up", className: "text-yes" },
+  bearish_yes: { label: "Lock trending down", className: "text-no" },
   flat: { label: "Flat", className: "text-muted" },
   mixed: { label: "Mixed", className: "text-muted" },
   unknown: { label: "No read yet", className: "text-muted" },

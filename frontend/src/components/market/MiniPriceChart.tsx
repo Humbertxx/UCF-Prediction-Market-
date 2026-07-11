@@ -10,6 +10,7 @@
 import { Line, LineChart, ReferenceDot, ResponsiveContainer, YAxis } from "recharts";
 
 import { toChartRows, type ChartRow } from "../../lib/priceChart";
+import { OUTCOME } from "../../lib/terminology";
 import type { PricePoint } from "../../types/market";
 
 interface MiniPriceChartProps {
@@ -54,7 +55,7 @@ export default function MiniPriceChart({
       role="img"
       aria-label={
         hasSeries
-          ? `YES price trend across ${priceSeries.length} trades`
+          ? `${OUTCOME.yes.label} price trend across ${priceSeries.length} trades`
           : "No trades yet"
       }
     >

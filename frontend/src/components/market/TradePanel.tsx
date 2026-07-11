@@ -12,6 +12,11 @@ import {
   formatPriceFromBps,
   isMarketTradeable,
 } from "../../lib/marketFormat";
+import {
+  formatTradeSideAction,
+  outcomeBuyLabel,
+  outcomeBuyingLabel,
+} from "../../lib/terminology";
 import type { MarketDetail, TradeSide } from "../../types/market";
 
 interface TradePanelProps {
@@ -118,7 +123,7 @@ export default function TradePanel({ market, onTradeSuccess }: TradePanelProps) 
               onClick={() => void handleTrade("yes")}
               className="rounded-btn bg-yes px-4 py-2.5 font-display font-medium text-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:opacity-50"
             >
-              {busy ? "Buying…" : "Buy YES"}
+              {busy ? outcomeBuyingLabel("yes") : outcomeBuyLabel("yes")}
             </button>
             <button
               type="button"
@@ -126,7 +131,7 @@ export default function TradePanel({ market, onTradeSuccess }: TradePanelProps) 
               onClick={() => void handleTrade("no")}
               className="rounded-btn bg-no px-4 py-2.5 font-display font-medium text-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:opacity-50"
             >
-              {busy ? "Buying…" : "Buy NO"}
+              {busy ? outcomeBuyingLabel("no") : outcomeBuyLabel("no")}
             </button>
           </div>
         </form>
@@ -134,7 +139,7 @@ export default function TradePanel({ market, onTradeSuccess }: TradePanelProps) 
 
       {status === "success" && result && (
         <p className="mt-4 font-data text-sm tabular-nums text-ink" role="status">
-          Bought {result.shares} {result.side.toUpperCase()} @{" "}
+          {formatTradeSideAction(result.side, result.shares)} @{" "}
           {formatPriceFromBps(result.yes_price_bps)} · Balance{" "}
           {result.balance_after}
         </p>

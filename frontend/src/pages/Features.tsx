@@ -12,6 +12,7 @@ import { useMarketBrief } from "../hooks/useMarketBrief";
 import { MarketBriefItem } from "../lib/api";
 import { CONFIDENCE_LABELS, TREND_LABELS } from "../lib/insightFormat";
 import { formatPercentFromBps, formatPriceFromBps } from "../lib/marketFormat";
+import { OUTCOME } from "../lib/terminology";
 
 function BriefSkeleton() {
   return (
@@ -36,7 +37,7 @@ function BriefCard({ item }: { item: MarketBriefItem }) {
         <span className="font-data tabular-nums text-ink">
           {formatPriceFromBps(item.yes_price_bps)}{" "}
           <span className="text-muted">
-            ({formatPercentFromBps(item.yes_price_bps)} YES)
+            ({formatPercentFromBps(item.yes_price_bps)} {OUTCOME.yes.label})
           </span>
         </span>
       </div>

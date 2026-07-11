@@ -1,5 +1,5 @@
 /**
- * Signature probability bar — YES/NO split with gold price marker.
+ * Signature probability bar — Lock/Doubt split with gold price marker.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -8,6 +8,7 @@ import {
   formatPercentFromBps,
   formatPriceFromBps,
 } from "../../lib/marketFormat";
+import { OUTCOME } from "../../lib/terminology";
 
 interface ProbabilityBarProps {
   yesPriceBps: number;
@@ -43,7 +44,7 @@ export default function ProbabilityBar({
         <div className="mb-2 flex items-baseline justify-between gap-3">
           <div className="flex items-baseline gap-2">
             <span className="text-xs font-medium uppercase tracking-wide text-yes">
-              YES
+              {OUTCOME.yes.label}
             </span>
             <span className="font-data text-lg tabular-nums text-ink">
               {formatPriceFromBps(clampedBps)}
@@ -54,7 +55,7 @@ export default function ProbabilityBar({
           </div>
           <div className="flex items-baseline gap-2 text-right">
             <span className="font-data text-sm tabular-nums text-muted">
-              NO {formatPriceFromBps(10000 - clampedBps)}
+              {OUTCOME.no.label} {formatPriceFromBps(10000 - clampedBps)}
             </span>
           </div>
         </div>
@@ -67,7 +68,7 @@ export default function ProbabilityBar({
           flash ? "ring-2 ring-gold/60 motion-reduce:ring-0" : "",
         ].join(" ")}
         role="img"
-        aria-label={`YES probability ${formatPercentFromBps(clampedBps)}, NO ${formatPercentFromBps(10000 - clampedBps)}`}
+        aria-label={`${OUTCOME.yes.label} probability ${formatPercentFromBps(clampedBps)}, ${OUTCOME.no.label} ${formatPercentFromBps(10000 - clampedBps)}`}
       >
         <div className="flex h-full w-full">
           <div
