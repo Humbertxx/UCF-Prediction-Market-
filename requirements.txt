@@ -1,0 +1,39 @@
+# BloomKnights backend — locked stack packages
+#
+# Setup:
+#   python -m venv .venv
+#   source .venv/bin/activate          # Windows: .venv\Scripts\activate
+#   pip install -r requirements.txt
+#
+# Verified (Python 3.12): fastapi 0.139, uvicorn 0.51, SQLAlchemy 2.0.51,
+# alembic 1.18, google-genai 1.75, supabase 2.31, pytest 8.4
+
+# API
+fastapi>=0.115.0,<1.0.0
+uvicorn[standard]>=0.32.0,<1.0.0
+python-multipart>=0.0.9
+httpx>=0.27.0,<1.0.0
+
+# Validation / settings
+pydantic>=2.9.0,<3.0.0
+pydantic-settings>=2.6.0,<3.0.0
+email-validator>=2.2.0,<3.0.0
+python-dotenv>=1.0.0,<2.0.0
+
+# Database
+SQLAlchemy>=2.0.36,<3.0.0
+alembic>=1.14.0,<2.0.0
+psycopg2-binary>=2.9.10,<3.0.0
+
+# Auth (Google OAuth -> app JWT)
+python-jose[cryptography]>=3.3.0,<4.0.0
+authlib>=1.3.2,<2.0.0
+
+# Supabase (Postgres client helpers / service role)
+supabase>=2.10.0,<3.0.0
+
+# Gemini insight engine (use google-genai only — not google-generativeai)
+google-genai>=1.0.0,<2.0.0
+
+# Tests (phase-gate AMM / trade checks)
+pytest>=8.3.0,<9.0.0
