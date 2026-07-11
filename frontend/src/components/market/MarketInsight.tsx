@@ -11,22 +11,8 @@
  * - Never blocks or overlays the probability bar or trade panel.
  */
 
-import { InsightConfidence, InsightTrend } from "../../lib/api";
 import { useInsight } from "../../hooks/useInsight";
-
-const TREND_LABELS: Record<InsightTrend, { label: string; className: string }> = {
-  bullish_yes: { label: "YES trending up", className: "text-yes" },
-  bearish_yes: { label: "YES trending down", className: "text-no" },
-  flat: { label: "Flat", className: "text-muted" },
-  mixed: { label: "Mixed", className: "text-muted" },
-  unknown: { label: "No read yet", className: "text-muted" },
-};
-
-const CONFIDENCE_LABELS: Record<InsightConfidence, string> = {
-  low: "Low confidence",
-  medium: "Medium confidence",
-  high: "High confidence",
-};
+import { CONFIDENCE_LABELS, TREND_LABELS } from "../../lib/insightFormat";
 
 interface MarketInsightProps {
   marketId: string;

@@ -1,7 +1,7 @@
 """Market service layer.
 
 Read helpers for markets and price history, plus idempotent seeding of the
-three demo markets. Route handlers stay thin by delegating here.
+demo markets. Route handlers stay thin by delegating here.
 """
 
 from __future__ import annotations
@@ -47,6 +47,25 @@ DEMO_MARKETS: tuple[DemoMarketSpec, ...] = (
         description="Resolves via the official enrollment figure. Left open for the demo.",
         p_true_bps=6000,
     ),
+    # Extra proof-of-concept markets so the list feels populated in demos.
+    DemoMarketSpec(
+        slug="ucf-vs-usf-football-ucf-covers",
+        title="UCF covers the spread vs USF?",
+        description="Demo sports market. Resolves via the official box score and published line.",
+        p_true_bps=5800,
+    ),
+    DemoMarketSpec(
+        slug="ucf-hackathon-2026-over-400-hackers",
+        title="UCF Hackathon 2026 draws 400+ hackers",
+        description="Demo campus-events market. Resolves via the event organizer's final headcount.",
+        p_true_bps=5200,
+    ),
+    DemoMarketSpec(
+        slug="ucf-dining-meal-plan-price-flat-fall-2026",
+        title="UCF meal-plan base price stays flat for Fall 2026",
+        description="Demo campus-life market. Resolves via Housing & Residence Life published rates.",
+        p_true_bps=3800,
+    ),
 )
 
 # Demo category labels for portfolio P/L breakdown (keyed by market slug).
@@ -54,6 +73,9 @@ CATEGORY_BY_SLUG: dict[str, str] = {
     "ucf-football-historical-replay": "Sports",
     "cop3502-exam1-mean-at-least-80": "Academics",
     "ucf-fall-2026-enrollment-over-75000": "Campus",
+    "ucf-vs-usf-football-ucf-covers": "Sports",
+    "ucf-hackathon-2026-over-400-hackers": "Campus",
+    "ucf-dining-meal-plan-price-flat-fall-2026": "Campus",
 }
 
 

@@ -48,3 +48,24 @@ class MarketInsightResponse(BaseModel):
     generated_at: datetime
     source: InsightSource
     insight: MarketInsight
+
+
+class MarketBriefItem(BaseModel):
+    """One market row for the AI Market Brief features tab."""
+
+    market_id: uuid.UUID
+    market_slug: str
+    market_title: str
+    category: str
+    market_status: str
+    yes_price_bps: int
+    generated_at: datetime
+    source: InsightSource
+    insight: MarketInsight
+
+
+class AiMarketBriefResponse(BaseModel):
+    """Batch insight brief across all markets."""
+
+    generated_at: datetime
+    markets: list[MarketBriefItem]

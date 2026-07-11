@@ -35,7 +35,7 @@ from backend.services import amm
 logger = logging.getLogger(__name__)
 
 PROMPT_VERSION = "v2"
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.5-flash"
 
 # Keep prompts compact: only the most recent trades matter for "recent action".
 MAX_TRADES_IN_PROMPT = 50

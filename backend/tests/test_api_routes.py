@@ -15,7 +15,7 @@ def test_list_markets_returns_seeded_markets(db, client) -> None:
     response = client.get("/markets")
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload) == 3
+    assert len(payload) == len(market_service.DEMO_MARKETS)
     assert payload[0]["yes_price_bps"] == 5000
 
 

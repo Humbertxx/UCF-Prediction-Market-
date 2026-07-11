@@ -180,7 +180,7 @@ def test_empty_market_price_history_is_empty_list(client, market) -> None:
 def test_seeded_demo_markets_open_at_midpoint_for_charts(db, client) -> None:
     market_service.seed_demo_markets(db)
     markets = client.get("/markets").json()
-    assert len(markets) == 3
+    assert len(markets) == len(market_service.DEMO_MARKETS)
     for row in markets:
         assert row["yes_price_bps"] == 5000
         assert row["status"] == "trading"

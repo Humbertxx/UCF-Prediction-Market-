@@ -200,6 +200,27 @@ export function getMarketInsight(
   return apiGet<MarketInsightResponse>(`/markets/${marketId}/insight`);
 }
 
+export interface MarketBriefItem {
+  market_id: string;
+  market_slug: string;
+  market_title: string;
+  category: string;
+  market_status: string;
+  yes_price_bps: number;
+  generated_at: string;
+  source: InsightSource;
+  insight: MarketInsight;
+}
+
+export interface AiMarketBriefResponse {
+  generated_at: string;
+  markets: MarketBriefItem[];
+}
+
+export function getAiMarketBrief(): Promise<AiMarketBriefResponse> {
+  return apiGet<AiMarketBriefResponse>("/features/ai-market-brief");
+}
+
 // ---- Markets, trades, positions, wallet ----
 
 export function listMarkets(): Promise<MarketSummary[]> {

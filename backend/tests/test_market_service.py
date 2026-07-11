@@ -7,17 +7,18 @@ from backend.models.enums import TradeSide
 from backend.services import market_service, trade_service
 
 
-def test_seed_demo_markets_creates_three_markets(db: Session) -> None:
+def test_seed_demo_markets_creates_all_specs(db: Session) -> None:
+    expected = len(market_service.DEMO_MARKETS)
     created = market_service.seed_demo_markets(db)
-    assert len(created) == 3
-    assert len(market_service.list_markets(db)) == 3
+    assert len(created) == expected
+    assert len(market_service.list_markets(db)) == expected
 
 
 def test_seed_demo_markets_is_idempotent(db: Session) -> None:
     market_service.seed_demo_markets(db)
     created_again = market_service.seed_demo_markets(db)
     assert created_again == []
-    assert len(market_service.list_markets(db)) == 3
+    assert len(market_service.list_markets(db)) == len(market_service.DEMO_MARKETS)
 
 
 def test_demo_markets_open_at_fifty_fifty(db: Session) -> None:
