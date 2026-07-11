@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/knightshi-banner.png" alt="Knightshi — UCF-themed prediction market simulation" width="100%" />
+</p>
+
 # Knightshi
 
 **Knightshi** is a UCF-themed binary prediction-market simulation built with virtual credits for the **BloomKnights** competition. Users buy YES/NO shares in demo markets, prices move through a constant-product market maker (CPMM), and belief-driven bots simulate a crowd so judges can watch prices converge toward a hidden probability in real time.
