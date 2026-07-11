@@ -13,6 +13,8 @@ import {
   HERO_ROTATING_LINES,
   HERO_STATIC_SUBLINE,
   LANDING_HERO_BACKGROUNDS,
+  LANDING_HERO_KEN_BURNS,
+  LANDING_HERO_STATIC_BACKGROUNDS,
 } from "../../lib/landing";
 import { MotionLink } from "../../motion/components/MotionButton";
 import { useMotionSafe } from "../../motion/hooks/useMotionSafe";
@@ -42,8 +44,11 @@ export default function HeroSection() {
   const [bgIndex, setBgIndex] = useState(0);
   const [bgLoaded, setBgLoaded] = useState(false);
 
-  const bgSrc = LANDING_HERO_BACKGROUNDS[bgIndex];
-  const hasMoreFallbacks = bgIndex < LANDING_HERO_BACKGROUNDS.length - 1;
+  const bgSources = motionReduced
+    ? LANDING_HERO_STATIC_BACKGROUNDS
+    : LANDING_HERO_BACKGROUNDS;
+  const bgSrc = bgSources[bgIndex];
+  const hasMoreFallbacks = bgIndex < bgSources.length - 1;
 
   const onBgError = useCallback(() => {
     if (hasMoreFallbacks) {
@@ -58,49 +63,48 @@ export default function HeroSection() {
     setBgLoaded(true);
   }, []);
 
+  const kenBurns = LANDING_HERO_KEN_BURNS && !motionReduced;
+
   return (
     <section
       className="relative isolate min-h-[min(88vh,52rem)] overflow-hidden bg-deck text-card"
       aria-labelledby="hero-heading"
     >
-      <img
-        key={bgSrc}
-        src={bgSrc}
-        alt=""
-        aria-hidden
-        className={[
-          "absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500",
-          bgLoaded ? "opacity-100" : "opacity-0",
-        ].join(" ")}
-        onLoad={onBgLoad}
-        onError={onBgError}
-      />
+      <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden>
+        <motion.img
+          key={bgSrc}
+          src={bgSrc}
+          alt=""
+          className={[
+            "h-full w-full object-cover object-center transition-opacity duration-500",
+            bgLoaded ? "opacity-100" : "opacity-0",
+          ].join(" ")}
+          animate={
+            kenBurns
+              ? { scale: [1, 1.08], x: ["0%", "-2%"], y: ["0%", "-1.5%"] }
+              : undefined
+          }
+          transition={
+            kenBurns
+              ? { duration: 18, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }
+              : undefined
+          }
+          onLoad={onBgLoad}
+          onError={onBgError}
+        />
+      </div>
 
       <div
-        className="absolute inset-0 bg-gradient-to-br from-deck via-[#252a35] to-deck"
+        className="absolute inset-0 z-[1] bg-gradient-to-br from-deck/85 via-deck/55 to-deck/75"
         aria-hidden
       />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-deck via-deck/75 to-deck/40"
+        className="absolute inset-0 z-[1] bg-gradient-to-t from-deck via-deck/70 to-transparent"
         aria-hidden
       />
 
       <motion.div
-        className="pointer-events-none absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-gold/15 blur-3xl"
-        aria-hidden
-        animate={
-          motionReduced
-            ? undefined
-            : {
-                opacity: [0.25, 0.45, 0.25],
-                scale: [1, 1.06, 1],
-              }
-        }
-        transition={{ duration: 4, ease: "linear", repeat: Infinity }}
-      />
-
-      <motion.div
-        className="relative mx-auto flex min-h-[min(88vh,52rem)] max-w-6xl flex-col justify-center px-4 py-20 sm:py-24"
+        className="relative z-[2] mx-auto flex min-h-[min(88vh,52rem)] max-w-6xl flex-col justify-center px-4 py-20 sm:py-24"
         initial={motionSafe.initial}
         animate="visible"
       >

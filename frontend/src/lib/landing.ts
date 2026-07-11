@@ -1,10 +1,14 @@
 /** Copy and asset paths for the marketing home page. */
 
+/** Hero background — served from `frontend/public/landing/`. */
 export const LANDING_HERO_BACKGROUNDS = [
   "/landing/hero-background.webp",
-  "/landing/hero-background.jpg",
-  "/landing/hero-background.png",
 ] as const;
+
+export const LANDING_HERO_STATIC_BACKGROUNDS = LANDING_HERO_BACKGROUNDS;
+
+/** Slow pan/zoom for still images; set false when using animated WebP or video. */
+export const LANDING_HERO_KEN_BURNS = true;
 
 /** Rotates every 3s in the hero (see DESIGN.md §15). */
 export const HERO_ROTATING_LINES = [

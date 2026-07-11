@@ -6,7 +6,8 @@ Drop image files here for the home page hero. Vite serves this folder at `/landi
 
 | File | Purpose |
 | --- | --- |
-| `hero-background.webp` | Primary full-bleed hero image (recommended) |
+| `gif.webp` | Animated hero background (plays automatically in modern browsers) |
+| `hero-background.webp` | Static hero image (fallback + reduced-motion preference) |
 | `hero-background.jpg` | Fallback if WebP is not used |
 | `hero-background.png` | Second fallback |
 

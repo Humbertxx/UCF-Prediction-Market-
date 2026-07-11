@@ -1,17 +1,26 @@
 /**
- * Profile page — authenticated trading stats for the signed-in user.
+ * Profile page — authenticated account strip + trading stats.
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import UserProfileSummary from "../components/layout/UserProfileSummary";
 import { useAuth } from "../context/AuthContext";
+import { useWallet } from "../hooks/useWallet";
 import { getMyProfileStats } from "../lib/user";
+import { MotionLink } from "../motion/components/MotionButton";
+import MotionReveal from "../motion/components/MotionReveal";
 import type { CurrentUserProfile } from "../types/user";
 
 export default function Profile() {
-  const { isAuthenticated, loading: authLoading, accessToken } = useAuth();
+  const {
+    user,
+    isAuthenticated,
+    loading: authLoading,
+    accessToken,
+  } = useAuth();
+  const { wallet, status: walletStatus } = useWallet(isAuthenticated);
   const [profileData, setProfileData] = useState<CurrentUserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +66,7 @@ export default function Profile() {
       </p>
       <h1 className="mt-3 font-display text-3xl font-semibold text-ink">Profile</h1>
       <p className="mt-2 text-base text-muted">
-        Username, volume, total P/L, and category breakdown for your trades.
+        Cash balance, volume, total P/L, and category breakdown for your trades.
       </p>
 
       {loading && (
@@ -86,15 +95,41 @@ export default function Profile() {
 
       {!loading && profileData && (
         <div className="mt-8">
-          <UserProfileSummary profile={profileData} />
+          <UserProfileSummary
+            profile={profileData}
+            wallet={wallet}
+            walletLoading={walletStatus === "loading"}
+            isAdmin={Boolean(user?.is_admin)}
+          />
         </div>
       )}
 
-      <p className="mt-8 text-center text-sm text-muted">
-        <Link to="/markets" className="text-ink underline-offset-2 hover:underline">
-          Back to markets
-        </Link>
-      </p>
+      <MotionReveal className="mt-10">
+        <div className="rounded-card border border-line bg-card px-6 py-8 text-center">
+          <p className="font-display text-lg font-semibold text-ink">
+            Ready to move a market?
+          </p>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted">
+            Open the board, pick a question, and lock in or doubt with virtual
+            credits.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <MotionLink
+              to="/markets"
+              className="rounded-btn bg-gold px-6 py-3 font-display text-base font-semibold text-ink shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+            >
+              Go to markets →
+            </MotionLink>
+            <MotionLink
+              to="/portfolio"
+              spring={false}
+              className="rounded-btn border border-line bg-card px-5 py-3 font-display text-base font-medium text-ink hover:border-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+            >
+              View portfolio
+            </MotionLink>
+          </div>
+        </div>
+      </MotionReveal>
     </main>
   );
 }
