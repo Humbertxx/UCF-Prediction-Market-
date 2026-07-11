@@ -1,7 +1,10 @@
 /**
  * Trades hook — price history, trade feed, and trade placement.
  *
- * Polls every 3s as a fallback until Supabase realtime is wired.
+ * Subscribes to Supabase `postgres_changes` INSERTs on `trades` for the market
+ * and refetches on each event; keeps a polling fallback in the same hook so the
+ * feed still moves if the websocket is unavailable (backed off while realtime is
+ * connected, restored to 3s on drop).
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -12,6 +15,7 @@ import {
   placeTrade,
   type ApiResponse,
 } from "../lib/api";
+import { getSupabaseClient } from "../lib/supabase";
 import type {
   PricePoint,
   TradeCreatePayload,
@@ -23,6 +27,10 @@ import type {
 export type TradesLoadStatus = "idle" | "loading" | "success" | "error";
 
 const DEFAULT_POLL_MS = 3000;
+// While realtime is connected, poll slowly as a backstop instead of every 3s.
+const CONNECTED_POLL_MS = 15000;
+// Collapse a burst of bot INSERTs into a single refetch.
+const EVENT_DEBOUNCE_MS = 250;
 
 export function useTrades(
   marketId: string | undefined,
@@ -35,7 +43,7 @@ export function useTrades(
   const [trades, setTrades] = useState<TradeHistoryItem[]>([]);
   const [priceHistory, setPriceHistory] = useState<PricePoint[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [realtimeConnected] = useState(false);
+  const [realtimeConnected, setRealtimeConnected] = useState(false);
 
   const refresh = useCallback(async () => {
     if (!marketId) {
@@ -62,16 +70,61 @@ export function useTrades(
     }
   }, [marketId]);
 
+  // Keep the latest `refresh` reachable from the subscription effect without
+  // re-subscribing every time it changes.
+  const refreshRef = useRef(refresh);
+  refreshRef.current = refresh;
+
+  // Realtime subscription: postgres_changes INSERT on trades for this market.
+  useEffect(() => {
+    if (!enabled || !marketId) return;
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+
+    let debounce: number | undefined;
+    const channel = supabase
+      .channel(`trades:${marketId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "trades",
+          filter: `market_id=eq.${marketId}`,
+        },
+        () => {
+          window.clearTimeout(debounce);
+          debounce = window.setTimeout(
+            () => void refreshRef.current(),
+            EVENT_DEBOUNCE_MS,
+          );
+        },
+      )
+      .subscribe((subStatus) => {
+        setRealtimeConnected(subStatus === "SUBSCRIBED");
+      });
+
+    return () => {
+      window.clearTimeout(debounce);
+      setRealtimeConnected(false);
+      void supabase.removeChannel(channel);
+    };
+  }, [enabled, marketId]);
+
+  // Initial load + polling fallback (slower while realtime is connected).
   useEffect(() => {
     if (!enabled || !marketId) return;
 
     void refresh();
+    const interval = realtimeConnected
+      ? CONNECTED_POLL_MS
+      : Math.min(pollMs, DEFAULT_POLL_MS);
     const timer = window.setInterval(() => {
       void refresh();
-    }, pollMs);
+    }, interval);
 
     return () => window.clearInterval(timer);
-  }, [enabled, marketId, pollMs, refresh]);
+  }, [enabled, marketId, pollMs, refresh, realtimeConnected]);
 
   return { trades, priceHistory, status, error, realtimeConnected, refresh };
 }
