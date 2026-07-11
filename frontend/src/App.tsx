@@ -16,7 +16,7 @@ import Profile from "./pages/Profile";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="flex min-h-screen flex-col bg-surface">
       <AppHeader />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -28,6 +28,9 @@ export default function App() {
         <Route path="/markets/:marketId" element={<MarketPage />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
+      <footer className="mt-auto border-t border-line py-4 text-center text-xs text-muted">
+        Simulation - virtual credits - no cash value
+      </footer>
     </div>
   );
 }

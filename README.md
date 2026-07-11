@@ -11,6 +11,9 @@ This is a simulation only. It uses virtual credits and is not gambling.
 | UCF football historical replay | ESPN box score | Resolvable |
 | COP3502 Exam 1 mean >= 80 | Canvas instructor post | Resolvable |
 | UCF Fall 2026 enrollment > 75,000 | Official enrollment figure | Left open/unresolved |
+| UCF covers the spread vs USF | Box score + published line | Proof of concept |
+| UCF Hackathon 2026 draws 400+ hackers | Organizer headcount | Proof of concept |
+| Meal-plan base price flat Fall 2026 | Housing published rates | Proof of concept |
 
 ## Tech Stack
 
@@ -87,7 +90,7 @@ UCF-Prediction-Market/
 │   ├── realtime/
 │   └── migrations/
 └── frontend/
-    ├── tailwind.config.cjs
+    ├── vite.config.ts
     ├── public/
     └── src/
         ├── components/
@@ -122,7 +125,34 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Keep dependencies in `.venv` — do not commit the virtualenv. Run the API with uvicorn once wired; it should expose `/health`. The frontend should point to it through `VITE_API_BASE_URL`. Gemini insight is planned and not implemented in this branch yet.
+Keep dependencies in `.venv` — do not commit the virtualenv. Run the API with uvicorn; it exposes `/health`. The frontend points to it through `VITE_API_BASE_URL`. Gemini insight degrades to a calm fallback whenever `GEMINI_API_KEY` is unset, so the trading core never depends on the AI being up.
+
+## Demo Day Runbook
+
+Start both services (two terminals, from repo root):
+
+```bash
+source .venv/bin/activate && uvicorn backend.main:app --reload --port 8000
+cd frontend && npm install && npm run dev   # http://localhost:5173
+```
+
+Optional clean slate before judging — resets demo markets to 0.50, wipes their
+trades/positions, and restores wallets to the initial grant (dev DB only):
+
+```bash
+python -m backend.seed --reset-demo
+```
+
+Demo path:
+
+1. Sign in at `http://localhost:5173/login` with an email listed in `ADMIN_EMAILS` (Google or demo login).
+2. Open the UCF football market — probability bar and price chart on screen.
+3. From **Admin**, start **Simulate** — bot trades land every 1–3 s and the price converges toward the hidden `p_true` live.
+4. On the market page, click **Get insight** — Gemini explains the price action in plain English.
+5. Visit **AI Brief** (`/features`) — one Gemini read per market, auto-loaded.
+6. Stop the simulation, then **Resolve** the market from Admin to show payouts and portfolio P/L.
+
+If Google sign-in complains about origins, use the demo email login — the whole path works without Google, Supabase, or Gemini being reachable.
 
 ## Agent Context
 

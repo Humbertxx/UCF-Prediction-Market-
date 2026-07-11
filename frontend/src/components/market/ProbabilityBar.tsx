@@ -63,24 +63,25 @@ export default function ProbabilityBar({
       <div
         className={[
           "relative h-3 overflow-hidden rounded-full border border-line bg-card",
-          flash ? "ring-2 ring-gold/60" : "",
+          // DESIGN.md §10: disable the gold flash under prefers-reduced-motion.
+          flash ? "ring-2 ring-gold/60 motion-reduce:ring-0" : "",
         ].join(" ")}
         role="img"
         aria-label={`YES probability ${formatPercentFromBps(clampedBps)}, NO ${formatPercentFromBps(10000 - clampedBps)}`}
       >
         <div className="flex h-full w-full">
           <div
-            className="h-full bg-yes transition-[width] duration-[400ms] ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none"
+            className="h-full bg-yes transition-[width] duration-400 ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none"
             style={{ width: `${yesPercent}%` }}
           />
           <div
-            className="h-full bg-no transition-[width] duration-[400ms] ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none"
+            className="h-full bg-no transition-[width] duration-400 ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none"
             style={{ width: `${noPercent}%` }}
           />
         </div>
 
         <div
-          className="pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-gold shadow-[0_0_6px_rgba(255,201,4,0.8)] transition-[left] duration-[400ms] ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none"
+          className="pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-gold shadow-[0_0_6px_rgba(255,201,4,0.8)] transition-[left] duration-400 ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none"
           style={{ left: `${yesPercent}%` }}
           aria-hidden
         />
