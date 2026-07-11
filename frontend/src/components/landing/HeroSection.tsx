@@ -96,13 +96,13 @@ export default function HeroSection() {
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center px-6 pb-16 pt-24 text-center md:pt-32">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center px-4 pb-12 pt-20 text-center sm:px-6 sm:pb-16 sm:pt-24 md:pt-32">
         <motion.h1
           id="hero-heading"
           variants={motionSafe.variants(fadeUp(0.1))}
           initial={motionInitial}
           animate={motionAnimate}
-          className="max-w-4xl font-display text-5xl font-bold leading-[1.1] text-card md:text-[clamp(3rem,8vw,6rem)]"
+          className="max-w-4xl font-display text-[clamp(2rem,9vw,3rem)] font-bold leading-[1.08] text-card sm:text-[clamp(2.5rem,8vw,3.75rem)] md:text-[clamp(3rem,8vw,6rem)]"
         >
           {HERO_HEADLINE.before}{" "}
           <em className="not-italic text-gold">{HERO_HEADLINE.accent}</em>{" "}
@@ -113,7 +113,7 @@ export default function HeroSection() {
           variants={motionSafe.variants(fadeUp(0.2))}
           initial={motionInitial}
           animate={motionAnimate}
-          className="mt-5 max-w-[42rem] font-body text-lg text-card/70"
+          className="mt-4 max-w-[42rem] font-body text-base text-card/70 sm:mt-5 sm:text-lg"
         >
           {HERO_STATIC_SUBLINE}
         </motion.p>
@@ -122,17 +122,17 @@ export default function HeroSection() {
           variants={motionSafe.variants(fadeUp(0.3))}
           initial={motionInitial}
           animate={motionAnimate}
-          className="mt-8 flex flex-col gap-3 sm:flex-row"
+          className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:mt-8 sm:max-w-none sm:w-auto sm:flex-row"
         >
           <MotionLink
             to="/markets"
-            className="rounded-[10px] bg-gold px-6 py-3 font-display text-base font-semibold text-ink shadow-lg transition hover:bg-gold/85"
+            className="rounded-[10px] bg-gold px-6 py-3 font-display text-base font-semibold text-ink shadow-lg transition hover:bg-gold/85 sm:w-auto"
           >
             View Live Markets
           </MotionLink>
           <MotionLink
             to="/how-it-works"
-            className="rounded-[10px] border border-card/20 bg-card/10 px-6 py-3 font-display text-base font-semibold text-card transition hover:bg-card/20"
+            className="rounded-[10px] border border-card/20 bg-card/10 px-6 py-3 font-display text-base font-semibold text-card transition hover:bg-card/20 sm:w-auto"
             spring={false}
           >
             How It Works
@@ -150,9 +150,9 @@ export default function HeroSection() {
           })}
           initial={motionInitial}
           animate={motionAnimate}
-          className="mt-16 w-full"
+          className="mt-10 w-full sm:mt-16"
         >
-          <MarketCardGrid density="compact" />
+          <MarketCardGrid density="compact" hideEmptyState />
         </motion.div>
       </div>
     </section>

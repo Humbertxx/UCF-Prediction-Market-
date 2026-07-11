@@ -29,26 +29,28 @@ export default function FinalCtaSection() {
     >
       <div className="mx-auto max-w-6xl">
         <motion.div
-          className="relative aspect-video overflow-hidden rounded-3xl"
+          className="flex flex-col overflow-hidden rounded-2xl sm:relative sm:block sm:aspect-video sm:rounded-3xl"
           initial={motionSafe.initial}
           whileInView={motionSafe.whileInView}
           viewport={motionSafe.viewport}
           variants={motionSafe.variants(cinematicReveal)}
         >
-          <img
-            src={LANDING_FINAL_CTA_IMAGE}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
+          <div className="relative aspect-[16/10] w-full shrink-0 sm:absolute sm:inset-0 sm:aspect-auto">
+            <img
+              src={LANDING_FINAL_CTA_IMAGE}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
 
-          <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-landing-deep/70 via-transparent to-transparent"
-            aria-hidden
-          />
+            <div
+              className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-landing-deep/70 via-transparent to-transparent sm:block"
+              aria-hidden
+            />
+          </div>
 
-          <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-4 p-6 md:flex-row md:items-end md:gap-6 md:p-10">
-            <div className="landing-glass max-w-md rounded-card p-6 md:p-8">
+          <div className="flex flex-col gap-4 bg-landing-panel p-5 sm:absolute sm:inset-x-0 sm:bottom-0 sm:bg-transparent sm:p-6 md:flex-row md:items-end md:gap-6 md:p-10">
+            <div className="landing-glass max-w-md rounded-card p-5 sm:p-6 md:p-8">
               <p className="font-display text-xs tracking-[0.12em] text-landing-muted uppercase">
                 {FINAL_CTA_SECTION.eyebrow}
               </p>
@@ -64,18 +66,18 @@ export default function FinalCtaSection() {
             </div>
 
             <div className="flex flex-col gap-3 md:ml-auto">
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 {isAuthenticated ? (
                   <>
                     <MotionLink
                       to="/markets"
-                      className="rounded-btn bg-gold px-6 py-3 font-display text-sm font-medium text-ink"
+                      className="rounded-btn bg-gold px-6 py-3 text-center font-display text-sm font-medium text-ink sm:text-left"
                     >
                       Go to markets
                     </MotionLink>
                     <MotionLink
                       to="/portfolio"
-                      className="landing-glass rounded-btn px-6 py-3 font-display text-sm font-medium text-landing-ink"
+                      className="landing-glass rounded-btn px-6 py-3 text-center font-display text-sm font-medium text-landing-ink sm:text-left"
                       spring={false}
                     >
                       Open portfolio
@@ -85,13 +87,13 @@ export default function FinalCtaSection() {
                   <>
                     <MotionLink
                       to="/login"
-                      className="rounded-btn bg-gold px-6 py-3 font-display text-sm font-medium text-ink"
+                      className="rounded-btn bg-gold px-6 py-3 text-center font-display text-sm font-medium text-ink sm:text-left"
                     >
                       Log in
                     </MotionLink>
                     <MotionLink
                       to="/markets"
-                      className="landing-glass rounded-btn px-6 py-3 font-display text-sm font-medium text-landing-ink"
+                      className="landing-glass rounded-btn px-6 py-3 text-center font-display text-sm font-medium text-landing-ink sm:text-left"
                       spring={false}
                     >
                       Browse first

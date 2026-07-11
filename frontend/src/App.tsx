@@ -29,7 +29,7 @@ function HomeFallback() {
 
 export default function App() {
   return (
-    <div className="flex min-h-screen flex-col bg-surface">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-surface">
       <AppHeader />
       <Suspense fallback={<HomeFallback />}>
         <Routes>

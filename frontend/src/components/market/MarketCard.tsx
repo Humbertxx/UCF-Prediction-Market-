@@ -79,7 +79,7 @@ export default function MarketCard({
         <h2
           className={[
             "font-display font-semibold leading-snug",
-            compact ? "max-w-[10rem] text-sm" : "text-xl",
+            compact ? "min-w-0 flex-1 text-sm sm:max-w-[10rem]" : "text-xl",
             styles.title,
           ].join(" ")}
         >

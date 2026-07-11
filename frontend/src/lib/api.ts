@@ -25,8 +25,18 @@ import type {
 } from "../types/market";
 
 const viteEnv = (import.meta as { env?: Record<string, string | undefined> }).env;
-export const API_BASE_URL: string =
-  viteEnv?.VITE_API_BASE_URL ?? "http://localhost:8000";
+
+// An empty or protocol-less VITE_API_BASE_URL would make fetch treat paths as
+// relative, so the SPA server answers /markets with index.html and JSON parsing
+// fails ("unexpected character at line 1 column 1"). Normalize both cases.
+function resolveApiBaseUrl(raw: string | undefined): string {
+  const trimmed = raw?.trim().replace(/\/+$/, "") ?? "";
+  if (!trimmed) return "http://localhost:8000";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+export const API_BASE_URL: string = resolveApiBaseUrl(viteEnv?.VITE_API_BASE_URL);
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -96,7 +106,18 @@ export async function apiRequest<T>(
       return { success: true, data: null, error: null };
     }
 
-    const data = (await response.json()) as T;
+    let data: T;
+    try {
+      data = (await response.json()) as T;
+    } catch {
+      return {
+        success: false,
+        data: null,
+        error:
+          `The server at ${API_BASE_URL} returned a non-JSON response for ` +
+          `${path} — the API base URL is likely pointing at the app itself. `,
+      };
+    }
     return { success: true, data, error: null };
   } catch (error) {
     const message =

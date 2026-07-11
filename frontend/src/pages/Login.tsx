@@ -84,11 +84,6 @@ export default function Login() {
       <h1 className="mt-3 font-display text-3xl font-semibold text-ink">
         Sign in
       </h1>
-      <p className="mt-2 text-base text-muted">
-        Continue with Google for a real account, or use demo email login. Admin
-        is gated by{" "}
-        <span className="font-data text-sm">ADMIN_EMAILS</span>.
-      </p>
 
       {googleConfigured && (
         <div className="mt-8 rounded-card border border-line bg-card p-6">
