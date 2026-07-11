@@ -17,10 +17,10 @@ This is a simulation only. It uses virtual credits and is not gambling.
 
 ## Tech Stack
 
-- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Recharts, Supabase Realtime, Axios.
+- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, Recharts, Supabase Realtime.
 - **Backend:** FastAPI, SQLAlchemy, Alembic, Supabase Postgres, JWT auth.
 - **AI:** Gemini through `google-genai` for one insight feature.
-- **Auth:** Google OAuth flow with an app JWT.
+- **Auth:** Google OAuth or demo email login with an app JWT.
 
 ## Architecture
 
@@ -75,10 +75,14 @@ Admin-triggered bots trade from private beliefs sampled around a hardcoded `p_tr
 ```text
 Knightshi/   (repo folder may still be UCF-Prediction-Market-)
 ├── README.md
+├── LICENSE.md
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── DESIGN.md
+├── MOTION.md
 ├── .env.example
+├── docs/
+│   └── RAILWAY.md
 ├── backend/
 │   ├── main.py
 │   ├── auth/
@@ -96,6 +100,7 @@ Knightshi/   (repo folder may still be UCF-Prediction-Market-)
         ├── components/
         ├── hooks/
         ├── lib/
+        ├── motion/
         └── pages/
 ```
 
@@ -103,11 +108,11 @@ Knightshi/   (repo folder may still be UCF-Prediction-Market-)
 
 Prerequisites:
 
-- Node.js 18+.
+- Node.js 20+.
 - Python 3.11+.
-- A Supabase project.
-- Google OAuth credentials.
-- A Gemini API key from Google AI Studio (needed later for market insight; not required for current trading core).
+- A Supabase project with Postgres.
+- Google OAuth credentials (optional for local demo — email login works).
+- A Gemini API key from Google AI Studio (optional; insight degrades safely when unset).
 
 Create your local environment file:
 
@@ -117,15 +122,23 @@ cp .env.example .env
 
 Fill in the blank values in `.env`. Never commit real secrets.
 
-Backend (current trading core):
+Backend:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+alembic -c alembic.ini upgrade head
+python -m backend.seed
 ```
 
-Keep dependencies in `.venv` — do not commit the virtualenv. Run the API with uvicorn; it exposes `/health`. The frontend points to it through `VITE_API_BASE_URL`. Gemini insight degrades to a calm fallback whenever `GEMINI_API_KEY` is unset, so the trading core never depends on the AI being up.
+Frontend:
+
+```bash
+cd frontend && npm install
+```
+
+Keep dependencies in `.venv` and `frontend/node_modules` — do not commit them. Run the API with uvicorn; it exposes `/health`. The frontend points to it through `VITE_API_BASE_URL`. Gemini insight degrades to a calm fallback whenever `GEMINI_API_KEY` is unset, so the trading core never depends on the AI being up.
 
 ## Deploy (Railway)
 
@@ -149,14 +162,22 @@ python -m backend.seed --reset-demo
 
 Demo path:
 
-1. Sign in at `http://localhost:5173/login` with an email listed in `ADMIN_EMAILS` (Google or demo login).
-2. Open the UCF football market — probability bar and price chart on screen.
-3. From **Admin**, start **Simulate** — bot trades land every 1–3 s and the price converges toward the hidden `p_true` live.
-4. On the market page, click **Get insight** — Gemini explains the price action in plain English.
-5. Visit **AI Brief** (`/features`) — one Gemini read per market, auto-loaded.
-6. Stop the simulation, then **Resolve** the market from Admin to show payouts and portfolio P/L.
+1. Browse the landing page at `http://localhost:5173/` — animated hero, market preview, and campus demo sections.
+2. Sign in at `/login` with an email listed in `ADMIN_EMAILS` (Google or demo email login).
+3. Open the UCF football market — probability bar and price chart on screen.
+4. From **Admin**, start **Simulate** — bot trades land every 1–3 s and the price converges toward the hidden `p_true` live.
+5. On the market page, click **Get insight** — Gemini explains the price action in plain English.
+6. Visit **AI Brief** (`/features`) — one Gemini read per market, auto-loaded.
+7. Stop the simulation, then **Resolve** the market from Admin to show payouts and portfolio P/L.
 
 If Google sign-in complains about origins, use the demo email login — the whole path works without Google, Supabase, or Gemini being reachable.
+
+## Testing
+
+```bash
+source .venv/bin/activate && pytest backend/tests
+cd frontend && npm test
+```
 
 ## Agent Context
 
@@ -166,6 +187,11 @@ For AI-assisted development, start new coding sessions by reading:
 - `.cursor/rules/*.mdc` for Cursor-scoped coding rules.
 - `CLAUDE.md` for Claude Code session bootstrap.
 - `DESIGN.md` for UI tokens and frontend design guidance.
+- `MOTION.md` for Framer Motion choreography on the landing route.
+
+## License
+
+MIT — see [`LICENSE.md`](LICENSE.md).
 
 ## Disclaimer
 
