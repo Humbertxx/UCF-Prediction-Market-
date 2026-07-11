@@ -6,12 +6,15 @@ import { motion } from "framer-motion";
 
 interface SkeletonProps {
   className?: string;
+  tone?: "default" | "landing";
 }
 
-export default function Skeleton({ className = "" }: SkeletonProps) {
+export default function Skeleton({ className = "", tone = "default" }: SkeletonProps) {
+  const bg = tone === "landing" ? "bg-landing-line/60" : "bg-line/60";
+
   return (
     <div
-      className={`relative overflow-hidden rounded-card bg-line/60 ${className}`}
+      className={`relative overflow-hidden rounded-card ${bg} ${className}`}
       aria-hidden
     >
       <motion.div
@@ -32,12 +35,17 @@ export default function Skeleton({ className = "" }: SkeletonProps) {
   );
 }
 
-export function MarketCardSkeleton() {
+export function MarketCardSkeleton({ tone = "default" }: { tone?: "default" | "landing" }) {
+  const shell =
+    tone === "landing"
+      ? "rounded-card border border-landing-line bg-landing-elevated p-4 md:p-6"
+      : "rounded-card border border-line bg-card p-4 md:p-6";
+
   return (
-    <div className="rounded-card border border-line bg-card p-4 md:p-6">
-      <Skeleton className="h-6 w-3/4" />
-      <Skeleton className="mt-4 h-3 w-full rounded-full" />
-      <Skeleton className="mt-3 h-4 w-1/2" />
+    <div className={shell}>
+      <Skeleton tone={tone} className="h-6 w-3/4" />
+      <Skeleton tone={tone} className="mt-4 h-3 w-full rounded-full" />
+      <Skeleton tone={tone} className="mt-3 h-4 w-1/2" />
     </div>
   );
 }

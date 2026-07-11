@@ -2,12 +2,31 @@
  * Markets page — browse active and historical prediction markets.
  */
 
+import { useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+
 import MarketCard from "../components/market/MarketCard";
 import { MarketCardSkeleton } from "../components/ui/Skeleton";
 import { useMarkets } from "../hooks/useMarket";
+import { CAMPUS_DEMO_TOPICS } from "../lib/landing";
+import { inferMarketCategory, isOpenMarketStatus } from "../lib/marketCategory";
 
 export default function Markets() {
   const { markets, status, error, refresh } = useMarkets();
+  const [searchParams] = useSearchParams();
+  const activeCategory = searchParams.get("category");
+
+  const filteredMarkets = useMemo(() => {
+    const openMarkets = markets.filter((market) => isOpenMarketStatus(market.status));
+
+    if (!activeCategory) {
+      return openMarkets;
+    }
+
+    return openMarkets.filter(
+      (market) => inferMarketCategory(market.slug) === activeCategory,
+    );
+  }, [activeCategory, markets]);
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
@@ -33,6 +52,44 @@ export default function Markets() {
           Refresh
         </button>
       </div>
+
+      <div className="mt-8 flex flex-wrap gap-2">
+        <Link
+          to="/markets"
+          className={[
+            "rounded-full border px-3 py-1.5 text-sm font-medium transition",
+            activeCategory
+              ? "border-line text-muted hover:border-gold hover:text-ink"
+              : "border-gold bg-gold/10 text-ink",
+          ].join(" ")}
+        >
+          All live
+        </Link>
+        {CAMPUS_DEMO_TOPICS.map((topic) => {
+          const selected = activeCategory === topic.category;
+
+          return (
+            <Link
+              key={topic.category}
+              to={`/markets?category=${encodeURIComponent(topic.category)}`}
+              className={[
+                "rounded-full border px-3 py-1.5 text-sm font-medium transition",
+                selected
+                  ? "border-gold bg-gold/10 text-ink"
+                  : "border-line text-muted hover:border-gold hover:text-ink",
+              ].join(" ")}
+            >
+              {topic.label}
+            </Link>
+          );
+        })}
+      </div>
+
+      {activeCategory && (
+        <p className="mt-4 text-sm text-muted">
+          Showing open {activeCategory.toLowerCase()} markets.
+        </p>
+      )}
 
       {status === "loading" && markets.length === 0 && (
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="status">
@@ -61,9 +118,15 @@ export default function Markets() {
         </p>
       )}
 
-      {markets.length > 0 && (
+      {status === "success" && markets.length > 0 && filteredMarkets.length === 0 && (
+        <p className="mt-10 text-sm text-muted">
+          No open {activeCategory?.toLowerCase() ?? ""} markets right now.
+        </p>
+      )}
+
+      {filteredMarkets.length > 0 && (
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {markets.map((market) => (
+          {filteredMarkets.map((market) => (
             <MarketCard key={market.id} market={market} />
           ))}
         </div>

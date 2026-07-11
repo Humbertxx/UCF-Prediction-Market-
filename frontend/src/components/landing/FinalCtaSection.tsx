@@ -1,84 +1,115 @@
 /**
- * Final CTA band before the global footer.
+ * Final CTA — featured-video layout with glass overlay and auth-aware CTAs.
  */
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 import { useAuth } from "../../context/AuthContext";
+import { FINAL_CTA_SECTION, LANDING_FINAL_CTA_IMAGE } from "../../lib/landing";
 import { MotionLink } from "../../motion/components/MotionButton";
-import MotionReveal from "../../motion/components/MotionReveal";
 import { useMotionSafe } from "../../motion/hooks/useMotionSafe";
-import { scalePop } from "../../motion/variants";
+
+const cinematicReveal: Variants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
 export default function FinalCtaSection() {
   const { isAuthenticated, user } = useAuth();
   const motionSafe = useMotionSafe();
 
   return (
-    <MotionReveal
-      className="bg-surface py-16 sm:py-20"
+    <section
+      className="overflow-hidden bg-landing-deep px-4 pt-6 pb-20 sm:px-6 md:pt-10 md:pb-32"
       aria-labelledby="final-cta-heading"
     >
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-6xl">
         <motion.div
-          variants={motionSafe.variants(scalePop)}
-          className="rounded-card border border-line bg-card px-6 py-10 text-center sm:px-12"
+          className="relative aspect-video overflow-hidden rounded-3xl"
+          initial={motionSafe.initial}
+          whileInView={motionSafe.whileInView}
+          viewport={motionSafe.viewport}
+          variants={motionSafe.variants(cinematicReveal)}
         >
-          <h2
-            id="final-cta-heading"
-            className="font-display text-2xl font-semibold text-ink sm:text-3xl"
-          >
-            Ready to place a trade?
-          </h2>
-          <p className="mx-auto mt-3 max-w-lg text-base text-muted">
-            Log in with Google or the demo account, receive virtual credits, and
-            open any active market. Simulation only — no cash value.
-          </p>
+          <img
+            src={LANDING_FINAL_CTA_IMAGE}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
 
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            {isAuthenticated ? (
-              <>
-                <MotionLink
-                  to="/markets"
-                  className="rounded-btn bg-deck px-6 py-3 font-display font-medium text-card"
-                >
-                  Go to markets
-                </MotionLink>
-                <MotionLink
-                  to="/portfolio"
-                  className="rounded-btn border border-line px-6 py-3 font-display font-medium text-ink"
-                  spring={false}
-                >
-                  Open portfolio
-                </MotionLink>
-              </>
-            ) : (
-              <>
-                <MotionLink
-                  to="/login"
-                  className="rounded-btn bg-deck px-6 py-3 font-display font-medium text-card"
-                >
-                  Log in
-                </MotionLink>
-                <MotionLink
-                  to="/markets"
-                  className="rounded-btn border border-line px-6 py-3 font-display font-medium text-ink"
-                  spring={false}
-                >
-                  Browse first
-                </MotionLink>
-              </>
-            )}
+          <div
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-landing-deep/70 via-transparent to-transparent"
+            aria-hidden
+          />
+
+          <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-4 p-6 md:flex-row md:items-end md:gap-6 md:p-10">
+            <div className="landing-glass max-w-md rounded-card p-6 md:p-8">
+              <p className="font-display text-xs tracking-[0.12em] text-landing-muted uppercase">
+                {FINAL_CTA_SECTION.eyebrow}
+              </p>
+              <h2
+                id="final-cta-heading"
+                className="mt-3 font-display text-xl font-semibold text-landing-ink md:text-2xl"
+              >
+                {FINAL_CTA_SECTION.heading}
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-landing-muted md:text-base">
+                {FINAL_CTA_SECTION.body}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 md:ml-auto">
+              <div className="flex flex-wrap gap-3">
+                {isAuthenticated ? (
+                  <>
+                    <MotionLink
+                      to="/markets"
+                      className="rounded-btn bg-gold px-6 py-3 font-display text-sm font-medium text-ink"
+                    >
+                      Go to markets
+                    </MotionLink>
+                    <MotionLink
+                      to="/portfolio"
+                      className="landing-glass rounded-btn px-6 py-3 font-display text-sm font-medium text-landing-ink"
+                      spring={false}
+                    >
+                      Open portfolio
+                    </MotionLink>
+                  </>
+                ) : (
+                  <>
+                    <MotionLink
+                      to="/login"
+                      className="rounded-btn bg-gold px-6 py-3 font-display text-sm font-medium text-ink"
+                    >
+                      Log in
+                    </MotionLink>
+                    <MotionLink
+                      to="/markets"
+                      className="landing-glass rounded-btn px-6 py-3 font-display text-sm font-medium text-landing-ink"
+                      spring={false}
+                    >
+                      Browse first
+                    </MotionLink>
+                  </>
+                )}
+              </div>
+
+              {isAuthenticated && user && (
+                <p className="font-data text-sm text-landing-muted">
+                  Signed in as {user.name ?? user.email}
+                  {user.is_admin ? " · admin" : ""}
+                </p>
+              )}
+            </div>
           </div>
-
-          {isAuthenticated && user && (
-            <p className="mt-6 font-data text-sm text-muted">
-              Signed in as {user.name ?? user.email}
-              {user.is_admin ? " · admin" : ""}
-            </p>
-          )}
         </motion.div>
       </div>
-    </MotionReveal>
+    </section>
   );
 }

@@ -2,6 +2,9 @@
  * Campus demo context — seeded market categories.
  */
 
+import { Link } from "react-router-dom";
+
+import HoverCard from "../ui/HoverCard";
 import { CAMPUS_DEMO_TOPICS } from "../../lib/landing";
 import { MotionLink } from "../../motion/components/MotionButton";
 import MotionReveal, { MotionRevealItem } from "../../motion/components/MotionReveal";
@@ -30,19 +33,26 @@ export default function CampusDemoSection() {
           </p>
         </MotionRevealItem>
 
-        <ul className="mt-10 grid gap-4 sm:grid-cols-3">
+        <ul className="mt-8 grid gap-2 sm:grid-cols-3">
           {CAMPUS_DEMO_TOPICS.map((topic) => (
-            <MotionRevealItem
-              key={topic.label}
-              as="li"
-              className="rounded-card border border-card/15 bg-card/5 p-5 backdrop-blur-sm"
-            >
-              <span className="text-xs font-medium uppercase tracking-wide text-gold">
-                {topic.label}
-              </span>
-              <p className="mt-2 font-display text-base font-medium text-card">
-                {topic.example}
-              </p>
+            <MotionRevealItem key={topic.label} as="li" className="h-full">
+              <HoverCard
+                as={Link}
+                to={`/markets?category=${encodeURIComponent(topic.category)}`}
+                tone="deck"
+                className="group h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                innerClassName="flex h-full min-h-[11rem] flex-col p-7 sm:min-h-[12rem]"
+              >
+                <span className="text-sm font-semibold uppercase tracking-wide text-gold transition-colors group-hover:text-ink">
+                  {topic.label}
+                </span>
+                <p className="mt-3 flex-1 font-display text-lg font-semibold leading-snug text-card transition-colors group-hover:text-ink sm:text-xl">
+                  {topic.example}
+                </p>
+                <p className="mt-4 text-base text-card/60 transition-colors group-hover:text-ink/70">
+                  View live {topic.label.toLowerCase()} markets →
+                </p>
+              </HoverCard>
             </MotionRevealItem>
           ))}
         </ul>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Card Grid — Moving Gradient Border</title>
+    <style>
+      :root {
+        --bg-deep: #12151c;
+        --bg-elevated: #282e3a;
+        --ink: #e6e8ec;
+        --muted: #949bab;
+        --gold: #ffc904;
+        --gold-light: #ffe566;
+        --radius: 12px;
+        --border-width: 3px;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, system-ui, sans-serif;
+        background: var(--bg-deep);
+        color: var(--ink);
+      }
+
+      .page {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 3rem 1.25rem 4rem;
+      }
+
+      .eyebrow {
+        margin: 0 0 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+
+      .page-title {
+        margin: 0;
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+      }
+
+      .page-subtitle {
+        margin: 0.75rem 0 0;
+        max-width: 40rem;
+        color: var(--muted);
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+      }
+
+      @media (min-width: 640px) {
+        .card-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .card-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      /*
+       * Card shell — padding creates the visible border thickness.
+       * overflow:hidden clips the oversized rotating gradient layer.
+       */
+      .card {
+        position: relative;
+        padding: var(--border-width);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 0 transparent;
+        transition:
+          transform 280ms var(--ease),
+          box-shadow 280ms var(--ease);
+      }
+
+      /*
+       * Rotating conic-gradient sits behind the inner panel.
+       * inset:-70% makes it larger than the card so corners stay filled while spinning.
+       * Hidden until hover, then spins continuously so the gold highlight travels around.
+       */
+      .card__glow {
+        position: absolute;
+        inset: -70%;
+        /* Solid yellow ring with soft cream highlights — no transparent gaps. */
+        background: conic-gradient(
+          from 0deg,
+          #ffc904 0deg,
+          #ffe566 45deg,
+          #fff6d4 90deg,
+          #ffe566 135deg,
+          #ffc904 180deg,
+          #fff0a8 225deg,
+          #ffc904 270deg,
+          #ffe566 315deg,
+          #ffc904 360deg
+        );
+        opacity: 0;
+        transition: opacity 280ms ease;
+        pointer-events: none;
+      }
+
+      .card:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow:
+          0 14px 36px rgb(0 0 0 / 0.38),
+          0 0 32px rgb(255 201 4 / 0.22);
+      }
+
+      .card:hover .card__glow {
+        opacity: 1;
+        animation: border-spin 5s linear infinite;
+      }
+
+      @keyframes border-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Inner panel masks the gradient center — only the padding gap shows as border. */
+      .card__inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.5rem;
+        border-radius: calc(var(--radius) - var(--border-width));
+        background: var(--bg-elevated);
+      }
+
+      .card__icon {
+        display: grid;
+        place-items: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 10px;
+        background: rgb(255 201 4 / 0.12);
+        border: 1px solid rgb(255 201 4 / 0.25);
+      }
+
+      .card__subtitle {
+        margin: 0;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+
+      .card__title {
+        margin: 0;
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      .card__body {
+        margin: 0;
+        font-size: 0.9375rem;
+        color: var(--muted);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .card,
+        .card__glow {
+          transition: none;
+        }
+
+        .card:hover {
+          transform: none;
+        }
+
+        .card:hover .card__glow {
+          animation: none;
+          opacity: 1;
+          background: conic-gradient(
+            from 0deg,
+            var(--gold),
+            var(--gold-light),
+            #fff6d4,
+            var(--gold-light),
+            var(--gold)
+          );
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <p class="eyebrow">Platform</p>
+      <h1 class="page-title">Built for campus calls</h1>
+      <p class="page-subtitle">
+        Hover a card — the gradient border expands and travels around the edge while the card lifts.
+      </p>
+
+      <section class="card-grid" aria-label="Feature cards">
+        <article class="card">
+          <div class="card__glow" aria-hidden="true"></div>
+          <div class="card__inner">
+            <div class="card__icon" aria-hidden="true">📊</div>
+            <p class="card__subtitle">Markets</p>
+            <h2 class="card__title">Live odds bar</h2>
+            <p class="card__body">Lock vs Doubt split with a gold marker in one glance.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__glow" aria-hidden="true"></div>
+          <div class="card__inner">
+            <div class="card__icon" aria-hidden="true">✨</div>
+            <p class="card__subtitle">AI</p>
+            <h2 class="card__title">Market brief</h2>
+            <p class="card__body">Plain-English read of where conviction is heading.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__glow" aria-hidden="true"></div>
+          <div class="card__inner">
+            <div class="card__icon" aria-hidden="true">📋</div>
+            <p class="card__subtitle">Portfolio</p>
+            <h2 class="card__title">Your call sheet</h2>
+            <p class="card__body">Every Lock and Doubt you've taken, tracked over time.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

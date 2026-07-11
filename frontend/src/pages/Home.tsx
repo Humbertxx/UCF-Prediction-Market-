@@ -15,7 +15,7 @@ import MarketsPreviewSection from "../components/landing/MarketsPreviewSection";
 export default function Home() {
   return (
     <MotionConfig reducedMotion="user">
-      <div className="flex flex-col">
+      <div className="flex flex-col bg-landing-deep">
         <HeroSection />
         <HowItWorksSection />
         <MarketsPreviewSection />

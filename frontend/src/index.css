@@ -17,6 +17,15 @@
   --color-line: #e2e5ea;
   --color-deck: #1b1e26;
 
+  /* Landing page — darker section rhythm (home route only) */
+  --color-landing-deep: #12151c;
+  --color-landing-surface: #181c24;
+  --color-landing-panel: #1f2430;
+  --color-landing-elevated: #282e3a;
+  --color-landing-ink: #e6e8ec;
+  --color-landing-muted: #949bab;
+  --color-landing-line: #3a404d;
+
   --font-display: "Space Grotesk", sans-serif;
   --font-body: "Inter", sans-serif;
   --font-data: "JetBrains Mono", monospace;
@@ -55,6 +64,28 @@ body {
   animation: trade-row-fade-in 600ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee 28s linear infinite;
+}
+
+@keyframes hover-card-border-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes skeleton-shimmer {
   from {
     transform: translateX(-100%);
@@ -85,5 +116,164 @@ body {
 
   .skeleton-shimmer::after {
     animation: none;
+  }
+
+  [style*="marquee"],
+  .marquee-track,
+  .hover-card__glow {
+    animation: none !important;
+  }
+
+  .hover-card:hover {
+    transform: none;
+  }
+
+  .hover-card:hover .hover-card__glow {
+    opacity: 1;
+    background: conic-gradient(
+      from 0deg,
+      #ffc904,
+      #ffe566,
+      #fff6d4,
+      #ffe566,
+      #ffc904
+    );
+  }
+}
+
+@layer components {
+  .landing-glass {
+    background: rgb(255 255 255 / 0.03);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: none;
+    box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .landing-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(
+      180deg,
+      rgb(255 255 255 / 0.35) 0%,
+      rgb(255 255 255 / 0.12) 20%,
+      transparent 40%,
+      transparent 60%,
+      rgb(255 255 255 / 0.12) 80%,
+      rgb(255 255 255 / 0.35) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /*
+   * Hover cards — animated gradient border + lift on landing; subtle lift on app surfaces.
+   * __glow is a rotating conic-gradient behind __inner; only the padding gap shows as border.
+   */
+  .hover-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 3px;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 0 transparent;
+    transition:
+      transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hover-card__glow {
+    position: absolute;
+    inset: -70%;
+    background: conic-gradient(
+      from 0deg,
+      #ffc904 0deg,
+      #ffe566 45deg,
+      #fff6d4 90deg,
+      #ffe566 135deg,
+      #ffc904 180deg,
+      #fff0a8 225deg,
+      #ffc904 270deg,
+      #ffe566 315deg,
+      #ffc904 360deg
+    );
+    opacity: 0;
+    transition: opacity 280ms ease;
+    pointer-events: none;
+  }
+
+  .hover-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow:
+      0 14px 36px rgb(0 0 0 / 0.38),
+      0 0 32px rgb(255 201 4 / 0.22);
+  }
+
+  .hover-card:hover .hover-card__glow {
+    opacity: 1;
+    animation: hover-card-border-spin 5s linear infinite;
+  }
+
+  .hover-card__inner {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 auto;
+    border-radius: calc(var(--radius-card) - 3px);
+  }
+
+  .hover-card__inner--landing {
+    background: var(--color-landing-elevated);
+  }
+
+  .hover-card__inner--panel {
+    background: var(--color-landing-panel);
+  }
+
+  .hover-card__inner--deck {
+    background: rgb(255 255 255 / 0.05);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: background 280ms ease;
+  }
+
+  /* Light fill on hover so ink text stays readable against the gold gradient border. */
+  .hover-card:hover .hover-card__inner--deck {
+    background: var(--color-card);
+  }
+
+  .hover-card__inner--card {
+    background: var(--color-card);
+    border: 1px solid var(--color-line);
+  }
+
+  /* App / trading surfaces — 2px lift, no spinning border (DESIGN.md §10). */
+  .hover-card--subtle {
+    display: block;
+    padding: 0;
+    overflow: visible;
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .hover-card--subtle:hover {
+    transform: translateY(-2px) scale(1);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);
+  }
+
+  .hover-card--subtle .hover-card__inner {
+    border-radius: var(--radius-card);
   }
 }

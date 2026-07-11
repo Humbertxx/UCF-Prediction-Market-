@@ -25,7 +25,7 @@ If no file is present, the hero uses a deck-toned gradient fallback.
 | File | Used in |
 | --- | --- |
 | `section-how-it-works.webp` | “How it works” band (optional right-side visual) |
-| `section-campus.webp` | Campus demo section background accent |
+| `Glow Black And White GIF by xponentialdesign.gif` | Final CTA featured background (black-hole loop) |
 
 ## Notes
 

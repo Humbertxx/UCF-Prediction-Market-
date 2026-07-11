@@ -1,5 +1,8 @@
 /** Copy and asset paths for the marketing home page. */
 
+/** Hero animated background — slowed derivative of `final-cta-art.gif` (~12× frame delay, ~9s loop). */
+export const LANDING_HERO_ANIMATED_BACKGROUND = "/landing/hero-background-slow.gif";
+
 /** Hero background — served from `frontend/public/landing/`. */
 export const LANDING_HERO_BACKGROUNDS = [
   "/landing/hero-background.webp",
@@ -8,9 +11,29 @@ export const LANDING_HERO_BACKGROUNDS = [
 export const LANDING_HERO_STATIC_BACKGROUNDS = LANDING_HERO_BACKGROUNDS;
 
 /** Slow pan/zoom for still images; set false when using animated WebP or video. */
-export const LANDING_HERO_KEN_BURNS = true;
+export const LANDING_HERO_KEN_BURNS = false;
 
-/** Rotates every 3s in the hero (see DESIGN.md §15). */
+export const LANDING_FINAL_CTA_IMAGE =
+  "/landing/Glow%20Black%20And%20White%20GIF%20by%20xponentialdesign.gif";
+
+export const FINAL_CTA_SECTION = {
+  eyebrow: "Get started",
+  heading: "Ready to place a trade?",
+  body: "Log in with Google or the demo account, receive virtual credits, and open any active market. Simulation only — no cash value.",
+} as const;
+
+export const MARKETS_PREVIEW_SECTION = {
+  eyebrow: "Markets",
+  heading: "Campus questions with live odds",
+  body: "Browse open markets across sports, academics, and enrollment. Prices move as students trade — virtual credits only, no cash value.",
+  cta: "View all markets",
+} as const;
+
+/** Hero motion timing (see DESIGN.md §15). */
+export const HERO_ROTATING_INTERVAL_MS = 4500;
+export const LANDING_HERO_KEN_BURNS_DURATION_S = 26;
+
+/** Rotates on `HERO_ROTATING_INTERVAL_MS` in the hero. */
 export const HERO_ROTATING_LINES = [
   "Lock or Doubt campus outcomes before you commit.",
   "Watch odds move as every trade lands.",
@@ -18,10 +41,14 @@ export const HERO_ROTATING_LINES = [
   "Read AI briefs on live price action.",
 ] as const;
 
-export const HERO_EYEBROW = "Knightshi";
+export const HERO_HEADLINE = {
+  before: "Predict campus outcomes",
+  accent: "and",
+  after: "win credits",
+} as const;
 
 export const HERO_STATIC_SUBLINE =
-  "Knightshi — virtual-credit prediction markets for UCF. Browse, trade, and follow live Lock/Doubt odds on football, exams, and enrollment.";
+  "Trade on UCF exam scores, game results, and enrollment numbers. See what the crowd believes — before it happens.";
 
 export const HOW_IT_WORKS_STEPS = [
   {
@@ -70,7 +97,22 @@ export const PLATFORM_FEATURES = [
 ] as const;
 
 export const CAMPUS_DEMO_TOPICS = [
-  { label: "Sports", example: "UCF football historical replay" },
-  { label: "Academics", example: "COP 3502 Exam 1 mean ≥ 80" },
-  { label: "Campus", example: "Fall 2026 enrollment over 75,000" },
+  {
+    label: "Sports",
+    category: "Sports",
+    example: "UCF football historical replay",
+    exampleSlug: "ucf-football-historical-replay",
+  },
+  {
+    label: "Academics",
+    category: "Academics",
+    example: "COP 3502 Exam 1 mean ≥ 80",
+    exampleSlug: "cop3502-exam1-mean-at-least-80",
+  },
+  {
+    label: "Campus",
+    category: "Campus",
+    example: "Fall 2026 enrollment over 75,000",
+    exampleSlug: "ucf-fall-2026-enrollment-over-75000",
+  },
 ] as const;
