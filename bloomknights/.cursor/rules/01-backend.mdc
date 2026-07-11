@@ -1,0 +1,9 @@
+# 01-backend.mdc
+
+Backend implementation constraints.
+
+- Keep route handlers thin; move logic into `services/`.
+- Validate payloads through `schemas/` before service execution.
+- Encapsulate market mechanics in `services/amm.py`.
+- Reuse `auth/` as-is unless explicitly requested to extend it.
+- Emit stable domain events for realtime and leaderboard recalculation.

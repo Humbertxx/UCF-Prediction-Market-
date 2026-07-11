@@ -1,0 +1,9 @@
+# 04-bots.mdc
+
+Bot-system guidance.
+
+- Keep bot behavior deterministic when running scripted sequences.
+- Separate strategy logic from orchestration/runtime concerns.
+- Log bot decisions with enough metadata for post-trade analysis.
+- Enforce risk limits and market validity checks before any bot trade.
+- Avoid hidden side effects in strategy evaluation functions.

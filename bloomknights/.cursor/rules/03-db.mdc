@@ -1,0 +1,9 @@
+# 03-db.mdc
+
+Database and migration conventions.
+
+- Model prediction-market entities explicitly (`market`, `trade`, `position`).
+- Store sufficient audit data to reconstruct trade history and P/L.
+- Make migrations additive and reversible.
+- Prefer explicit indexes for market status and user-position lookups.
+- Keep denormalized leaderboard materializations transparent and reproducible.
