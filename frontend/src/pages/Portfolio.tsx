@@ -50,8 +50,7 @@ export default function Portfolio() {
             Your positions
           </h1>
           <p className="mt-2 max-w-2xl text-base text-muted">
-            Open contracts and settled markets you have traded in — similar to a
-            Kalshi portfolio view.
+            Open contracts and settled markets you have traded in.
           </p>
         </div>
         <button

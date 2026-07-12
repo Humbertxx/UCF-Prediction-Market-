@@ -84,7 +84,7 @@ export const PLATFORM_FEATURES = [
   },
   {
     title: "AI Market Brief",
-    body: "Wonder what traders think about that exam cutoff or game outcome? Gemini turns recent trades into a plain-English read — with a safe fallback if the API is quiet.",
+    body: "Wonder what traders think about that exam cutoff or game outcome? Get a plain-English read of recent trades — with a safe fallback if the feed is quiet.",
     href: "/features",
     cta: "Open AI brief",
   },
