@@ -150,7 +150,7 @@ Keep dependencies in `.venv` and `frontend/node_modules` — do not commit them.
 
 Production uses two Railway services (API + frontend SPA). See [`docs/RAILWAY.md`](docs/RAILWAY.md) for root directories, env vars, and the `VITE_API_BASE_URL` deploy order.
 
-## Demo Day Runbook
+## Demo Runbook
 
 Start both services (two terminals, from repo root):
 
@@ -159,7 +159,7 @@ source .venv/bin/activate && uvicorn backend.main:app --reload --port 8000
 cd frontend && npm install && npm run dev   # http://localhost:5173
 ```
 
-Optional clean slate before judging — resets demo markets to 0.50, wipes their
+Optional clean slate — resets demo markets to 0.50, wipes their
 trades/positions, and restores wallets to the initial grant (dev DB only):
 
 ```bash
@@ -176,7 +176,8 @@ Demo path:
 6. Visit **AI Brief** (`/features`) — one Gemini read per market, auto-loaded.
 7. Stop the simulation, then **Resolve** the market from Admin to show payouts and portfolio P/L.
 
-If Google sign-in complains about origins, use the demo email login — the whole path works without Google, Supabase, or Gemini being reachable.
+>[!NOTE]
+>If Google sign-in complains about origins, use demo email login the whole path works without Google, Supabase, or Gemini being reachable.
 
 ## Testing
 
