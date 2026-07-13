@@ -49,3 +49,6 @@ Thumbs.db
 .cache/
 .turbo/
 .parcel-cache/
+
+# Local design references
+examples_web_design/
