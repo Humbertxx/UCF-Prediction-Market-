@@ -79,7 +79,7 @@ Admin-triggered bots trade from private beliefs sampled around a hardcoded `p_tr
 ## Project Structure
 
 ```text
-Knightshi/   (repo folder may still be UCF-Prediction-Market-)
+Knightshi/ 
 ├── README.md
 ├── LICENSE.md
 ├── AGENTS.md
